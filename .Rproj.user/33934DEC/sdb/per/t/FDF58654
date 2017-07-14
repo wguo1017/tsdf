@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "Package: tsdf\nType: Package\nTitle: Three stage dose finding \nVersion: 0.1.0\nAuthor: Wenchuan Guo, Bob Zhong\nMaintainer: Wenchuan Guo <wguo007@ucr.edu>\nImports: gsDesign\nDescription: Generate three stage design dose finding decision table. This package also allows users to run dose-finding simulations based on customized decision table.\nLicense: GPL-2\nEncoding: UTF-8\nLazyData: true\nRoxygenNote: 6.0.1\n",
+    "created" : 1499957314712.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2798750592",
+    "id" : "FDF58654",
+    "lastKnownWriteTime" : 1500041176,
+    "last_content_update" : 1500041176800,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/DESCRIPTION",
+    "project_path" : "DESCRIPTION",
+    "properties" : {
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "dcf"
+}

@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' plot decision table from a \"dec.table\" object.\n#' @description \\code{plot} method for class \"\\code{dec.table}\"\n#' @param x an object of class \\code{\"dec.table\"}, a result of a call to \\code{dec.table}.\n#' @param ... Not used argument.\n#' @details \\code{plot.dec.table} prints the decision boundarys.\n#' @import graphics\n#' @export\nplot.dec.table <- function(x, ...) {\n  n <- x$n\n  nc <- cumsum(n)\n  r <- x$E\n  s <- x$D\n  su <- x$DU\n  col <- c(1:3, \"cornsilk\")\n  plot(nc, r, xaxt = \"n\", ylab = \"Boundary\", xlab = 'Sample Size', ylim = c(0, max(su)+2), type = \"o\", col=col[1], main = \"Decision Plot\")\n  points(nc, s + 1, type = \"o\", col = col[2])\n  points(nc, su + 1, type = \"o\", col = col[3])\n  axis(1, at = nc, labels = nc)\n  polygon(c(nc, rev(nc)), c(r + 0.05, rev(s + 1 - 0.05)), col = \"cornsilk\", border = NA)\n  legend(\"topleft\", c(\"E (<=)\", \"D (>=)\", \"DU (>=)\", \"S\"), fill = col)\n}\n\n#' print decision table from a \"dec.table\" object.\n#' @description \\code{print} method for class \"\\code{dec.table}\"\n#' @param x an object of class \\code{\"dec.table\"}, a result of a call to \\code{dec.table}.\n#' @param ... Not used argument.\n#' @details \\code{print.dec.table} prints the decision table with legend keys.\n#' @export\nprint.dec.table <- function(x, ...) {\n  print(x$table)\n  cat(\"\\n\")\n  cat(\"Column : number of DLTs ;\", \"\\n\")\n  cat(\"   Row : number of patients at current stage ;\", \"\\n\")\n  cat(\"     E : Escalate to the next higher dose ;\", \"\\n\")\n  cat(\"     S : Stay at the same dose ;\", \"\\n\")\n  cat(\"     D : De-escalate to the previous lower dose ;\", \"\\n\")\n  cat(\"    DU : De-escalate and never use this dose again\",\"\\n\")\n}\n\n",
+    "created" : 1499973405441.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2892609544",
+    "id" : "DC97DCB2",
+    "lastKnownWriteTime" : 1500040838,
+    "last_content_update" : 1500040838613,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/R/utility.R",
+    "project_path" : "R/utility.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
