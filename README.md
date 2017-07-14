@@ -1,5 +1,6 @@
-# tsdf
+tsdf
 ===
+
 ### What is it?
 
 `tsdf` generates decision table for Phase 1 dose finding and allows user to run simulations using customized decision table.
