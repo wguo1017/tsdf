@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Dose-finding simulations\n#' @description Run simulations based on a customized decision table.\n#' @param truep A vector of length k (the number of doses being considered in the trial), with values equal to the true probabilities of toxicity at the dose levels.\n#' @param decTable A customized decision table. (same format as output of \\code{\\link{dec.table}})\n#' @param start.level Starting dose level. Defaults to 1, i.e. the lowest dose level.\n#' @param nsim The number of simulation trials. Defaults to 1000.\n#' @return The functions summary is used to obtain and print a summary table of the results. An object of class \\code{\"dec.sim\"} is a list containing:\n#'  \\item{MTD}{A vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}\n#'  \\item{n.patients}{The average number of patients dosed at each level.}\n#   \\item{alpha.one}{a vector of true type 1 error for right-tailed test.}\n#'  \\item{truep}{input; true probabilities of toxicity.}\n#'  \\item{start.level}{input; starting dose level.}\n#'  \\item{nsim}{input; number of simulated trails.}\n#' @author Wenchuan Guo <wguo007@ucr.edu>\n#' @import stats\n#' @export\n#' @examples\n#' truep <- c(0.3, 0.45, 0.5, 0.6)\n#' res <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))\n#' out <- dec.sim(truep, res$table, start.level=2, nsim=1000)\n#' summary(out, pt=0.3)\n\n\ndec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {\n  # initialization\n  n_dose <- length(truep)\n  maxn <- 9\n  mtd <- rep(0, nsim)\n  np <- matrix(0, nrow=nsim, ncol=n_dose)\n  for(i in 1:nsim){\n    # dose need to be removed\n    rm.dose <- NULL\n    # current dose level\n    dose <- start.level\n    # # of DLT\n    dlt <- rep(0, n_dose)\n    while(mtd[i] == 0){\n      np[i, dose] <- np[i, dose] + 3\n      dlt[dose] <- dlt[dose] + sum(rbinom(3, 1, truep[dose]))\n      des <- decTable[dlt[dose]+1, np[i, dose]/3]\n      # case: stay (S)\n      if(des == \"S\"){\n        if(np[i, dose]!=maxn) {\n          dose <- dose\n        }\n        else {\n          mtd[i] <- dose\n        }\n      }\n      # case : escalate (E)\n      if(des == \"E\") {\n        # check if next dose level is available\n        if((dose+1)%in%rm.dose){\n          mtd[i] <- dose\n        } else {\n          # check if can escalate\n          if(dose!=n_dose){\n            if(np[i, dose+1] != maxn) {\n              dose <- dose + 1\n            } else {\n              next_des <- decTable[dlt[dose+1]+1, np[i, dose+1]/3]\n              if(next_des == \"D\" | next_des == \"DU\"){\n                mtd[i] <- dose\n              } else {\n                mtd[i] <- dose + 1\n              }\n            }\n          } else {\n            mtd[i] <- dose\n          }\n        }\n      }\n      # case : de-escalate (D)\n      if(des == \"D\") {\n        if(dose!=1) {\n          if(np[i, dose-1] != maxn) {\n            dose <- dose - 1\n          } else {\n            mtd[i] <- dose -1\n          }\n        } else {\n          mtd[i] <- dose\n        }\n      }\n      # case : de-escalate U\n      if(des == \"DU\") {\n        if(dose!=1) {\n          # can not go back to this dose again\n          rm.dose <- c(rm.dose, dose)\n          if(np[i, dose-1] != maxn) {\n            dose <- dose - 1\n          } else {\n            mtd[i] <- dose -1\n          }\n        } else {\n          mtd[i] <- dose\n        }\n      }\n    }\n  }\n  out <- list(MTD=mtd, n.patients=colMeans(np), truep=truep, start.level=start.level, nsim=nsim)\n  class(out) <- \"dec.sim\"\n  return(out)\n}\n",
+    "created" : 1500319691800.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1369471209",
+    "id" : "1E83FBAE",
+    "lastKnownWriteTime" : 1500322244,
+    "last_content_update" : 1500322244848,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/R/dec.sim.R",
+    "project_path" : "R/dec.sim.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

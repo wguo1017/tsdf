@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' plot simulation results from a dec.sim object\n#' @description Three plots are currently available: a plot of true toxicity at each dose level (\\code{type=\"s\"}); a bar plot of the probability of selecting as the MTD for each dose level (\\code{type=\"prob\"}) and a bar plot of the average number of patients treated at each dose level (\\code{type=\"np\"}).\n#' @param x an object of class \\code{\"dec.sim\"}, a result of a call to \\code{dec.sim} or \\code{sl.sim}.\n#' @param pt target toxicity for each scenario.\n#' @param s scenario to be plotted. Default is 1.\n#' @param type plot type. See descriptions above.\n#' @param show a logical value indicating if values are shown on plot.\n#' @param ... Not used argument.\n#' @import graphics\n#' @export\n\nplot.dec.sim <- function(x, pt, s = 1, type = c(\"s\", \"prob\", \"np\"), show = TRUE, ...) {\n  # check\n  type <- match.arg(type)\n  if(class(x)[1] == \"sl.sim\") {\n    obj <- x[[s]]\n  } else {\n    obj <- x\n  }\n  # initialization\n  truep <- obj$truep\n  n_dose <- length(truep)\n  names.arg <- 1:n_dose\n  if(missing(pt)) {\n    warning(\"true toxicity is missing\")\n  } else {\n    mtd <- max(which(truep <= pt[s]))\n    names.arg[mtd] <- paste(mtd, \"(MTD)\")\n  }\n  # plot as specified \"type\"\n  if(type == \"prob\") {\n    mtd.prob <- sapply(1:n_dose, function(ii) mean(obj$MTD==ii))\n    out <- barplot(mtd.prob, xlab = \"Dose level\", col = \"cornflowerblue\", main = paste(\"Scenario\", s, \":\", \"prob. of selected as the MTD \"), names.arg = names.arg, panel.first = grid(), ylim = c(0, max(mtd.prob) + 0.1))\n    if(show){\n      text(out, mtd.prob, labels = mtd.prob, pos = 3, cex = 1, col = \"darkblue\")\n    }\n  }\n  if(type == \"np\") {\n    np <- obj$n.patients\n    out <- barplot(np, xlab = \"Dose level\", col = \"cornflowerblue\", names.arg = names.arg,  panel.first = grid(), main = paste(\"Scenario\", s, \":\", \"avg. number of patients treated\"), ylim = c(0, max(np) + 0.8))\n    if(show){\n      text(out, np, labels = np, pos = 3, cex = 1, col = \"darkblue\")\n    }\n  }\n  if(type == \"s\") {\n    out <- plot(1:n_dose, truep, xlab = \"Dose level\", ylab=\"\", col = \"cornflowerblue\", type = \"o\", main = paste(\"Scenario\", s, \":\", \"true toxicity\"), ylim = c(min(truep) - 0.03, max(truep) + 0.03), xaxt=\"n\", panel.first = grid())\n    axis(1, at = 1:n_dose, labels = names.arg)\n    if(!missing(pt)) {\n      abline(pt[s], 0, lty = 5)\n      text(n_dose/2, pt[s], labels = paste(\"Target = \", pt[s]), pos = 3, cex = 1, col = \"darkblue\")\n    }\n    if(show){\n      text(1:n_dose, truep, labels = truep, pos = 3, cex = 1, col = \"darkblue\")\n    }\n  }\n}\n\n\n\n\n",
+    "created" : 1500322427294.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "639368160",
+    "id" : "CFD34853",
+    "lastKnownWriteTime" : 1500322434,
+    "last_content_update" : 1500322434025,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/R/plot.dec.sim.R",
+    "project_path" : "R/plot.dec.sim.R",
+    "properties" : {
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

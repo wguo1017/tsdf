@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# tsdf 1.0\n- added dec.sim, sl.sim functions\n- added S3 method summary, plot for class \"dec.sim\"\n\n# tsdf 0.1.0\n- initial release on github\n",
+    "created" : 1500320947956.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1846512314",
+    "id" : "2362D7AC",
+    "lastKnownWriteTime" : 1500321418,
+    "last_content_update" : 1500321418161,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/NEWS",
+    "project_path" : "NEWS",
+    "properties" : {
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

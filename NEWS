@@ -1,2 +1,6 @@
+# tsdf 1.0
+- added dec.sim, sl.sim functions
+- added S3 method summary, plot for class "dec.sim"
+
 # tsdf 0.1.0
-- initial release on CRAN
+- initial release on github
