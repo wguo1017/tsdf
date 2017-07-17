@@ -3,7 +3,7 @@ tsdf
 
 ### What is it?
 
-`tsdf` generates decision table for Phase 1 dose finding and allows user to run simulations using customized decision table.
+`tsdf` generates decision table for Phase 1 dose-finding and allows user to run simulations using customized decision table.
 
 ### Installation
 To install the latest version from `github` :
