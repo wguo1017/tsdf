@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Generate three stage dose finding decision table\n#' @description Generate three stage dose finding decision table\n#' @param alpha.l Left-side overall type 1 error. Control the upper bound of dose escalation.\n#' @param alpha.r Right-side overall type 1 error. Control the lower bound of dose de-escalatition.\n#' @param alpha.u Right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for \"DU\".\n#' @param pc A numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).\n#' @param pc.u A numeric vector of target toxicity which is used to obtain \"DU\" in the decision table.\n#' @param n A vector of sample size at each stage. \\code{sum(n)} is the total sample size.\n#' @param sf The alpha-spending function to be used. \\code{sf=\"OF\"} or \"\\code{sf=\"Pocock\"} uses spending function in R package \\code{\\link{gsDesign}}; or a user supplied spending function.\n#' @param ... Not used argument.\n#' @return An object of class \"decision.table\" is a list containing:\n#'  \\item{table}{the generated decision table.}\n#'  \\item{alpha.two}{a vector of true type 1 error for two-tailed test.}\n#   \\item{alpha.one}{a vector of true type 1 error for right-tailed test.}\n#'  \\item{E}{a vector of \"E\" bound.}\n#'  \\item{D}{a vector of \"D\" bound.}\n#'  \\item{DU}{a vector of \"DU\" bound.}\n#'  \\item{pc}{input; a vector of target toxicity}\n#'  \\item{pc.u}{input; a vector of target toxicity }\n#'  \\item{n}{input; a vector with sample size at each stage.}\n#'  \\item{sf}{input; the alpha-spending function used.}\n#' @author Wenchuan Guo <wguo007@ucr.edu>\n#' @import gsDesign\n#' @import stats\n#' @export\n#' @examples\n#' n <- rep(3, 3)\n#' alpha.l <- 0.6\n#' alpha.r <- 0.4\n#' alpha.u <- 0.3\n#' pc <- c(0.29, 0.31)\n#' pc.u <- 0.3\n#' # print out decision table\n#' dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)$table\n\ndec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = \"Pocock\") {\n  # check\n  err <- c(alpha.l, alpha.r, alpha.u)\n  if(sum(err < 0 | err > 1) != 0) {\n    stop(\"'alpha' should between 0 and 1.\")\n  }\n  if(length(pc) > 2) {\n    stop(\"'pc''s length should less than 2 (two-tailed test).\")\n  }\n  if(length(pc) == 1) {\n    pc <- rep(pc, 2)\n  }\n  if(length(pc.u) != 1) {\n    stop(\"'pc.u''s length should be 1 (right-tailed test).\")\n  }\n  if(length(n)!=3) {\n    stop(\"This function only find three-stage optimal design\")\n  }\n  if(sf != \"Pocock\" & sf != \"OF\" & !is.function(sf)){\n    stop(\"'sf' should be either 'OF', 'Pocock' or a user specified spending function\" )\n  }\n  out.two <- two.opt(alpha.l, alpha.r, pc, n, sf)\n  out.one <- right.opt(alpha.u, pc.u, n, sf)\n  des <- list(E = out.two$out[1, 1:3], D = out.two$out[1, 4:6], DU = out.one$out[1, 1:3],  n = n, pc = pc, pc.u = pc.u, sf = sf, alpha.two = out.two$out[1, 7:12], alpha.one = out.one$out[1, 4:6])\n  r <- des$E\n  s <- des$D\n  su <- des$DU\n  ns <- length(n)\n  nt <- sum(n)\n  nc <- cumsum(n)\n  ans <- matrix(0, nt+1, ns)\n  rownames(ans) <- 0:nt\n  colnames(ans) <- nc\n  for(j in 1:length(r)){\n    ans[ ,j][1:(r[j]+1)] <- \"E\"\n    ans[ ,j][(s[j]+2):(nc[j]+1)] <- \"D\"\n    ans[ ,j][(su[j]+2):(nc[j]+1)] <- \"DU\"\n    ans[ ,j][(r[j]+2):(s[j]+1)] <- \"S\"\n  }\n  out <- c(des, list(table=as.table(ans)))\n  class(out) <- \"dec.table\"\n  return(out)\n}\n",
+    "created" : 1499973952818.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3494570014",
+    "id" : "92AABAAD",
+    "lastKnownWriteTime" : 1500322769,
+    "last_content_update" : 1500322769439,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/R/dec.table.R",
+    "project_path" : "R/dec.table.R",
+    "properties" : {
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

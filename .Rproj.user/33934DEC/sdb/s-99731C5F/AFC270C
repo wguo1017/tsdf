@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Dose-finding simulations for a list of scenarios\n#' @description Run dose-finding simulations based on a customized decision table for a list of scenarios.\n#' @param decTable A customized decision table. (same format as output of \\code{dec.table})\n#' @param file The name of the file which the data are to be read from. See details in \\code{\\link{read.table}}.\n#' @param header A logical value indicating whether the file contains the names of the variables as its first line. Default is \\code{FALSE}. See details in \\code{\\link{read.table}}.\n#' @param sep The field separator character. Default is \\code{\",\"}. See details in \\code{\\link{read.table}}.\n#' @details In each line of the input file, the parameters must be ordered in accordance as follows: \\code{pt}, \\code{start.level}, \\code{nsim}, \\code{truep}. See details in \\code{\\link{read.table}}.\n#' @return The functions summary is used to obtain and print a summary table of the results. An object of class \\code{\"dec.sim\"} (1 scenario) or \\code{\"sl.sim\"} (more than 1 scenarios)is a list containing:\n#'  \\item{MTD}{A vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}\n#'  \\item{n.patients}{The average number of patients dosed at each level.}\n#   \\item{alpha.one}{a vector of true type 1 error for right-tailed test.}\n#'  \\item{truep}{input; true probabilities of toxicity.}\n#'  \\item{start.level}{input; starting dose level.}\n#'  \\item{nsim}{input; number of simulated trails.}\n#' @author Wenchuan Guo <wguo007@ucr.edu>\n#' @import stats\n#' @import utils\n#' @export\n\nsl.sim <- function(decTable, file, header = FALSE, sep = \",\") {\n  sl <- read.table(file, header, sep)\n  out <- lapply(1:nrow(sl), function(i){\n    info <- sl[i, ][!is.na(sl[i, ])]\n    n.info <- length(info)\n    dec.sim(info[4:n.info], decTable, info[2], info[3])\n  })\n  if(nrow(sl) > 1) {\n    class(out) <- c(\"sl.sim\", \"dec.sim\")\n  } else {\n    class(out) <- \"dec.sim\"\n  }\n  return(out)\n}\n",
+    "created" : 1500320376608.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1562325924",
+    "id" : "AFC270C",
+    "lastKnownWriteTime" : 1500323137,
+    "last_content_update" : 1500323137307,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/R/sl.sum.R",
+    "project_path" : "R/sl.sum.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

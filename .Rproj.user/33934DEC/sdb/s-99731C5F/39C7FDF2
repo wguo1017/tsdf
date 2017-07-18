@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "# tsdf 1.0-1\n- changed version number\n- \"dec.sim\" function returns average number of dlts and proportions of MTD at each dose level\n- changed \"n.patients\" in \"dec.sim\" object to average number of patients at each dose level\n- added simulation informations in \"summary\" method of \"dec.sim\" object\n- added warnings in \"summary\" method of \"dec.sim\" object\n- added type=\"dlt\" in \"plot\" method of \"dec.sim\" object\n\n# tsdf 1.0-0\n- added \"dec.sim\", \"sl.sim\" functions\n- added S3 method \"summary\" and \"plot\" for class \"dec.sim\"\n\n# tsdf 0.1.0\n- initial release on github\n",
+    "created" : 1500404663043.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2784852651",
+    "id" : "39C7FDF2",
+    "lastKnownWriteTime" : 1500405435,
+    "last_content_update" : 1500405435152,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/NEWS",
+    "project_path" : "NEWS",
+    "properties" : {
+    },
+    "relative_order" : 8,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "text"
+}

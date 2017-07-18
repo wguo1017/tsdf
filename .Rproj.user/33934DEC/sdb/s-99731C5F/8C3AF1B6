@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' print decision table from a \"dec.table\" object.\n#' @description \\code{print} method for class \"\\code{dec.table}\"\n#' @param x an object of class \\code{\"dec.table\"}, a result of a call to \\code{dec.table}.\n#' @param ... Not used argument.\n#' @details \\code{print.dec.table} prints the decision table with legend keys.\n#' @export\nprint.dec.table <- function(x, ...) {\n  print(x$table)\n  cat(\"\\n\")\n  cat(\"Column : number of DLTs ;\", \"\\n\")\n  cat(\"   Row : number of patients at current stage ;\", \"\\n\")\n  cat(\"     E : Escalate to the next higher dose ;\", \"\\n\")\n  cat(\"     S : Stay at the same dose ;\", \"\\n\")\n  cat(\"     D : De-escalate to the previous lower dose ;\", \"\\n\")\n  cat(\"    DU : De-escalate and never use this dose again.\", \"\\n\")\n}\n",
+    "created" : 1500322390142.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1013354609",
+    "id" : "8C3AF1B6",
+    "lastKnownWriteTime" : 1500386830,
+    "last_content_update" : 1500386830975,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/R/print.dec.table.R",
+    "project_path" : "R/print.dec.table.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 9,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

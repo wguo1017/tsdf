@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "#' Summarizing simulation results from a dec.sim object\n#' @description \\code{summary} method for class \\code{\"dec.sim\"}.\n#' @param object an object of class \\code{\"dec.sim\"}, a result of a call to \\code{dec.sim} or \\code{sl.sim}.\n#' @param pt target toxicity for each scenario.\n#' @param ... Not used argument.\n#' @import stats\n#' @export\n\nsummary.dec.sim <- function(object, pt, ...) {\n  if(missing(pt)) {\n    warning(\"Missing true toxicity; set to be 1.\")\n    pt <- 1\n  }\n  if(class(object)[1] == \"sl.sim\" & length(object) != length(pt)) {\n    warning(\"pt length not equal to number of scenarios; only returns the first scenario stats\")\n  }\n  cat(\"How to read the table :\", \"\\n\\n\")\n  cat(\"Level : Dose level\", \"\\n\")\n  cat(\"Truth : True toxicity probability\", \"\\n\")\n  cat(\"MTD : The probability of selecting as the MTD\", \"\\n\")\n  cat(\"DLT : The average number of patients experienced DLT\", \"\\n\")\n  cat(\"NP : The average number of patients treated\", \"\\n\\n\")\n  ns <- length(pt)\n  avg.np <- rep(0, ns)\n  avg.dose <- rep(0, ns)\n  avg.prob <- rep(0, ns)\n  out <- vector(\"list\", ns)\n  for(i in 1:ns) {\n    if(class(object)[1] == \"sl.sim\"){\n      ans <- object[[i]]\n    } else {\n      ans <- object\n    }\n    truep <- ans$truep\n    n_dose <- length(truep)\n    res <- matrix(0, n_dose, 5)\n    colnames(res) <- c(\"Level\", \"Truth\", \"MTD\", \"DLT\", \"NP\")\n    res[, 1] <- 1:n_dose\n    res[, 2] <- truep\n    res[, 3] <- ans$mtd.prob\n    res[, 4] <- ans$dlt\n    res[, 5] <- ans$n.patients\n    # calculate stats\n    avg.np[i] <- sum(res[, 5])\n    avg.dose[i] <- res[, 3][max(which(truep <= pt[i]))]\n    avg.prob[i] <-sum(res[, 5][truep <= pt[i]])/sum(res[, 5])\n    # table legends\n    cat(\"Scenario \", i, \"\\n\\n\")\n    cat(\"Simulation results are based on\", ans$nsim, \"simulated trials\",\"\\n\")\n    cat(\"Starting dose level is\", ans$start.level, \"\\n\")\n    cat(\"Target toxicity probability =\", pt[i], \"\\n\")\n    cat(\"Average number of subjects =\", avg.np[i], \"\\n\")\n    cat(\"Probability of selecting the true MTD =\", avg.dose[i], \"\\n\")\n    cat(\"Probability of patients treated at or below the true MTD =\", avg.prob[i], \"\\n\\n\")\n    print(as.data.frame(res))\n    cat(\"\\n\")\n  }\n}\n",
+    "created" : 1500322435681.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2099021230",
+    "id" : "A61FA60E",
+    "lastKnownWriteTime" : 1500398512,
+    "last_content_update" : 1500398512284,
+    "path" : "C:/Users/wguo25/Desktop/Package/tsdf/R/summary.dec.sim.R",
+    "project_path" : "R/summary.dec.sim.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 10,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
