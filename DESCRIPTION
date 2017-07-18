@@ -1,7 +1,8 @@
 Package: tsdf
 Type: Package
 Title: Three stage dose finding 
-Version: 1.0
+Version: 1.0-1
+Date: 2017-07-17
 Author: Wenchuan Guo, Bob Zhong
 Maintainer: Wenchuan Guo <wguo007@ucr.edu>
 Imports: gsDesign
