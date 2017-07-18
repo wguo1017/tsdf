@@ -12,5 +12,5 @@ print.dec.table <- function(x, ...) {
   cat("     E : Escalate to the next higher dose ;", "\n")
   cat("     S : Stay at the same dose ;", "\n")
   cat("     D : De-escalate to the previous lower dose ;", "\n")
-  cat("    DU : De-escalate and never use this dose again","\n")
+  cat("    DU : De-escalate and never use this dose again.", "\n")
 }
