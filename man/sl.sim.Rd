@@ -13,7 +13,7 @@ sl.sim(decTable, file, header = FALSE, sep = ",")
 
 \item{header}{A logical value indicating whether the file contains the names of the variables as its first line. Default is \code{FALSE}. See details in \code{\link{read.table}}.}
 
-\item{sep}{The field separator character. Default is \code{","}. See details in \code{read.table}.}
+\item{sep}{The field separator character. Default is \code{","}. See details in \code{\link{read.table}}.}
 }
 \value{
 The functions summary is used to obtain and print a summary table of the results. An object of class \code{"dec.sim"} (1 scenario) or \code{"sl.sim"} (more than 1 scenarios)is a list containing:
@@ -24,7 +24,7 @@ The functions summary is used to obtain and print a summary table of the results
  \item{nsim}{input; number of simulated trails.}
 }
 \description{
-Run simulations based on a customized decision table for a list of scenarios.
+Run dose-finding simulations based on a customized decision table for a list of scenarios.
 }
 \details{
 In each line of the input file, the parameters must be ordered in accordance as follows: \code{pt}, \code{start.level}, \code{nsim}, \code{truep}. See details in \code{\link{read.table}}.

@@ -4,22 +4,29 @@
 \alias{plot.dec.sim}
 \title{plot simulation results from a dec.sim object}
 \usage{
-\method{plot}{dec.sim}(x, pt, s = 1, type = c("s", "prob", "np"),
-  show = TRUE, ...)
+\method{plot}{dec.sim}(x, pt, s = 1, type = c("all", "s", "prob", "np",
+  "dlt"), show = TRUE, col = "cornflowerblue", text.col = "darkblue",
+  cex = 1, ...)
 }
 \arguments{
-\item{x}{an object of class \code{"dec.sim"}, a result of a call to \code{dec.sim} or \code{sl.sim}.}
+\item{x}{an object of class \code{"dec.sim"} or \code{"sl.sim"}, a result of a call to \code{dec.sim} or \code{sl.sim}.}
 
-\item{pt}{target toxicity for each scenario.}
+\item{pt}{a vector with target toxicity for each scenario.}
 
-\item{s}{scenario to be plotted. Default is 1.}
+\item{s}{scenario to be plotted. Defaults to 1.}
 
 \item{type}{plot type. See descriptions above.}
 
 \item{show}{a logical value indicating if values are shown on plot.}
 
-\item{...}{Not used argument.}
+\item{col}{graphical parameter \code{col}; see details \code{\link{par}}.}
+
+\item{text.col}{plotting color of text shown.}
+
+\item{cex}{graphical parameter \code{col}; see details \code{\link{par}}.}
+
+\item{...}{arguments to be passed to \code{\link{plot}} methods.}
 }
 \description{
-Three plots are currently available: a plot of true toxicity at each dose level (\code{type="s"}); a bar plot of the probability of selecting as the MTD for each dose level (\code{type="prob"}) and a bar plot of the average number of patients treated at each dose level (\code{type="np"}).
+Three plots are currently available: a plot of true toxicity at each dose level (\code{type = "s"}); a bar plot of the probability of selecting as the MTD for each dose level (\code{type = "prob"}); a bar plot of the average number of patients treated at each dose level (\code{type = "np"}); a bar plot of the average number of patients experienced DLT at each dose level (\code{type = "dlt"}) and \code{type = "all"} generates all above plots.
 }

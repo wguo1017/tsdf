@@ -16,15 +16,17 @@ dec.sim(truep, decTable, start.level = 1, nsim = 1000)
 \item{nsim}{The number of simulation trials. Defaults to 1000.}
 }
 \value{
-The functions summary is used to obtain and print a summary table of the results. An object of class \code{"dec.sim"} is a list containing:
- \item{MTD}{A vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}
- \item{n.patients}{The average number of patients dosed at each level.}
+The functions \code{\link{summary.dec.sim}} is used to obtain and print a summary table of the results (recommended). An object of class \code{"dec.sim"} is a list containing:
+ \item{mtd}{a vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}
+ \item{mtd.prob}{a vector of length \code{k} giving the average proportions of selected as MTD at each dose level}
+ \item{n.patients}{the average number of patients dosed at each level.}
+ \item{dlt}{the average number of DLTs experienced at each dose level}
  \item{truep}{input; true probabilities of toxicity.}
  \item{start.level}{input; starting dose level.}
  \item{nsim}{input; number of simulated trails.}
 }
 \description{
-Run simulations based on a customized decision table.
+Run dose-finding simulations based on a customized decision table.
 }
 \examples{
 truep <- c(0.3, 0.45, 0.5, 0.6)

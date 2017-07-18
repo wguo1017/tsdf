@@ -19,7 +19,7 @@ dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf = "Pocock")
 
 \item{n}{A vector of sample size at each stage. \code{sum(n)} is the total sample size.}
 
-\item{sf}{The alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{gsDesign}; or a user supplied spending function.}
+\item{sf}{The alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.}
 
 \item{...}{Not used argument.}
 }

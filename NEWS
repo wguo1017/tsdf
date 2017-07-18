@@ -1,6 +1,14 @@
-# tsdf 1.0
-- added dec.sim, sl.sim functions
-- added S3 method summary, plot for class "dec.sim"
+# tsdf 1.0-1
+- changed version number
+- "dec.sim" function returns average number of dlts and proportions of MTD at each dose level
+- changed "n.patients" in "dec.sim" object to average number of patients at each dose level
+- added simulation informations in "summary" method of "dec.sim" object
+- added warnings in "summary" method of "dec.sim" object
+- added type="dlt" in "plot" method of "dec.sim" object
+
+# tsdf 1.0-0
+- added "dec.sim", "sl.sim" functions
+- added S3 method "summary" and "plot" for class "dec.sim"
 
 # tsdf 0.1.0
 - initial release on github
