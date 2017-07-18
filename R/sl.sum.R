@@ -1,9 +1,9 @@
 #' Dose-finding simulations for a list of scenarios
-#' @description Run simulations based on a customized decision table for a list of scenarios.
+#' @description Run dose-finding simulations based on a customized decision table for a list of scenarios.
 #' @param decTable A customized decision table. (same format as output of \code{dec.table})
 #' @param file The name of the file which the data are to be read from. See details in \code{\link{read.table}}.
 #' @param header A logical value indicating whether the file contains the names of the variables as its first line. Default is \code{FALSE}. See details in \code{\link{read.table}}.
-#' @param sep The field separator character. Default is \code{","}. See details in \code{read.table}.
+#' @param sep The field separator character. Default is \code{","}. See details in \code{\link{read.table}}.
 #' @details In each line of the input file, the parameters must be ordered in accordance as follows: \code{pt}, \code{start.level}, \code{nsim}, \code{truep}. See details in \code{\link{read.table}}.
 #' @return The functions summary is used to obtain and print a summary table of the results. An object of class \code{"dec.sim"} (1 scenario) or \code{"sl.sim"} (more than 1 scenarios)is a list containing:
 #'  \item{MTD}{A vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}
