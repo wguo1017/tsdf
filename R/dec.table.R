@@ -6,7 +6,7 @@
 #' @param pc A numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).
 #' @param pc.u A numeric vector of target toxicity which is used to obtain "DU" in the decision table.
 #' @param n A vector of sample size at each stage. \code{sum(n)} is the total sample size.
-#' @param sf The alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{gsDesign}; or a user supplied spending function.
+#' @param sf The alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.
 #' @param ... Not used argument.
 #' @return An object of class "decision.table" is a list containing:
 #'  \item{table}{the generated decision table.}
