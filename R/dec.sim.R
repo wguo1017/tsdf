@@ -24,40 +24,50 @@
 dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
   # initialization
   n_dose <- length(truep)
-  maxn <- 9
+  input.sample <- as.numeric(colnames(decTable))
+  maxn <- nrow(decTable) - 1
+  nc <- ncol(decTable)
+  if(input.sample[length(input.sample)] != maxn) {
+    stop("Please check decision table format")
+  }
+  add <- c(input.sample[1], diff(input.sample))
   mtd <- rep(0, nsim)
-  np <- matrix(0, nrow=nsim, ncol=n_dose)
+  np <- matrix(0, nrow = nsim, ncol = n_dose)
   dlt <- matrix(0, nsim, n_dose)
   for(i in 1:nsim){
     # dose need to be removed
     rm.dose <- NULL
     # current dose level
     dose <- start.level
+    # stage current dose at
+    sample.stage <- rep(1, n_dose)
     while(mtd[i] == 0){
-      np[i, dose] <- np[i, dose] + 3
-      dlt[i, dose] <- dlt[i, dose] + sum(rbinom(3, 1, truep[dose]))
-      des <- decTable[dlt[i, dose]+1, np[i, dose]/3]
+      add.sample <- add[sample.stage[dose]]
+      np[i, dose] <- np[i, dose] + add.sample
+      dlt[i, dose] <- dlt[i, dose] + sum(rbinom(add.sample, 1, truep[dose]))
+      des <- decTable[dlt[i, dose]+1, sample.stage[dose]]
+      sample.stage[dose] <- sample.stage[dose] + 1
       # case: stay (S)
       if(des == "S"){
-        if(np[i, dose]!=maxn) {
+        if(np[i, dose] != maxn) {
           dose <- dose
-        }
+        } 
         else {
           mtd[i] <- dose
-        }
+        } 
       }
       # case : escalate (E)
       if(des == "E") {
         # check if next dose level is available
-        if((dose+1)%in%rm.dose){
+        if((dose+1) %in% rm.dose){
           mtd[i] <- dose
         } else {
           # check if can escalate
-          if(dose!=n_dose){
-            if(np[i, dose+1] != maxn) {
+          if(dose != n_dose){
+            if(np[i, dose + 1] != maxn) {
               dose <- dose + 1
             } else {
-              next_des <- decTable[dlt[i, dose + 1] + 1, np[i, dose + 1]/3]
+              next_des <- decTable[dlt[i, dose + 1] + 1, nc]
               if(next_des == "D" | next_des == "DU"){
                 mtd[i] <- dose
               } else {
@@ -66,22 +76,22 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
             }
           } else {
             mtd[i] <- dose
-          }
+          }	
         }
       }
       # case : de-escalate (D)
       if(des == "D") {
-        if(dose!=1) {
+        if(dose != 1) {
           if(np[i, dose-1] != maxn) {
             dose <- dose - 1
           } else {
-            mtd[i] <- dose -1
+            mtd[i] <- dose -1 
           }
         } else {
           mtd[i] <- dose
         }
       }
-      # case : de-escalate U
+      # case : de-escalate (DU)
       if(des == "DU") {
         if(dose != 1) {
           # can not go back to this dose again
@@ -89,17 +99,17 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
           if(np[i, dose-1] != maxn) {
             dose <- dose - 1
           } else {
-            mtd[i] <- dose -1
+            mtd[i] <- dose -1 
           }
         } else {
           mtd[i] <- dose
         }
       }
-    }
+    }		
   }
   mtd.prob <- sapply(1:n_dose, function(ii) mean(mtd==ii))
-
   out <- list(mtd = mtd, mtd.prob = mtd.prob, dlt = colMeans(dlt), n.patients = colMeans(np), truep = truep, start.level = start.level, nsim = nsim)
   class(out) <- "dec.sim"
   return(out)
 }
+
