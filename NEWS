@@ -1,5 +1,11 @@
+# tsdf 1.0-2
+- "dec.sim" now can run simulation for any customized decision table 
+- added format checking in "dec.sim"
+- added an example scenarios list "testS.csv" 
+- added few examples in a couple of functions
+- added detail warning messages in "dec.table" function
+
 # tsdf 1.0-1
-- changed version number
 - "dec.sim" function returns average number of dlts and proportions of MTD at each dose level
 - changed "n.patients" in "dec.sim" object to average number of patients at each dose level
 - added simulation informations in "summary" method of "dec.sim" object

@@ -5,7 +5,7 @@
 \title{plot simulation results from a dec.sim object}
 \usage{
 \method{plot}{dec.sim}(x, pt, s = 1, type = c("all", "s", "prob", "np",
-  "dlt"), show = TRUE, col = "cornflowerblue", text.col = "darkblue",
+  "dlt"), label = TRUE, col = "cornflowerblue", text.col = "darkblue",
   cex = 1, ...)
 }
 \arguments{
@@ -17,7 +17,7 @@
 
 \item{type}{plot type. See descriptions above.}
 
-\item{show}{a logical value indicating if values are shown on plot.}
+\item{label}{a logical value indicating if values are shown on plot.}
 
 \item{col}{graphical parameter \code{col}; see details \code{\link{par}}.}
 
@@ -29,4 +29,15 @@
 }
 \description{
 Three plots are currently available: a plot of true toxicity at each dose level (\code{type = "s"}); a bar plot of the probability of selecting as the MTD for each dose level (\code{type = "prob"}); a bar plot of the average number of patients treated at each dose level (\code{type = "np"}); a bar plot of the average number of patients experienced DLT at each dose level (\code{type = "dlt"}) and \code{type = "all"} generates all above plots.
+}
+\examples{
+# generate decision table
+dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+# simulate trials from test data 
+test.file <- system.file("extdata", "testS.csv", package = "tsdf")
+out <- sl.sim(dt$table, test.file)
+plot(out, pt=rep(0.3,2), s=1, type="all")
+plot(out, pt=rep(0.3,2), s=2, type="prob")
+plot(out, pt=rep(0.3,2), s=1, type="np")
+plot(out, pt=rep(0.3,2), s=2, type="dlt")
 }
