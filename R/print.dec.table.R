@@ -7,10 +7,10 @@
 print.dec.table <- function(x, ...) {
   print(x$table)
   cat("\n")
-  cat("Column : number of DLTs ;", "\n")
-  cat("   Row : number of patients at current stage ;", "\n")
-  cat("     E : Escalate to the next higher dose ;", "\n")
-  cat("     S : Stay at the same dose ;", "\n")
-  cat("     D : De-escalate to the previous lower dose ;", "\n")
-  cat("    DU : De-escalate and never use this dose again.", "\n")
+  cat("Column : Number of DLTs", "\n")
+  cat("   Row : Number of patients at current stage", "\n")
+  cat("     E : Escalate to the next higher dose", "\n")
+  cat("     S : Stay at the same dose", "\n")
+  cat("     D : De-escalate to the previous lower dose", "\n")
+  cat("    DU : De-escalate and never use this dose again", "\n")
 }

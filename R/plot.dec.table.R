@@ -12,7 +12,7 @@ plot.dec.table <- function(x, ...) {
   s <- x$D
   su <- x$DU
   col <- c(1:3, "cornsilk")
-  plot(nc, r, xaxt = "n", ylab = "Boundary", xlab = 'Sample Size', ylim = c(0, max(su)+2), type = "o", col=col[1], main = "Decision Plot")
+  plot(nc, r, xaxt = "n", ylab = "Boundary", xlab = 'Sample Size', ylim = c(0, max(su)+2), type = "o", col=col[1], main = "Decision Plot", panel.first = grid())
   points(nc, s + 1, type = "o", col = col[2])
   points(nc, su + 1, type = "o", col = col[3])
   axis(1, at = nc, labels = nc)
