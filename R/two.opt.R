@@ -19,7 +19,7 @@ two.opt <- function(alpha1, alpha2, pc, n, sf = "Pocock", ...){
   ind_r1 <- which(out_r1 <= as_left[1])
   # check if conditions hold
   if(length(ind_r1)==0) {
-    stop("No optimal design")
+    stop("No optimal design (left side)")
   } else {
     r1 <- r1_bdry[ind_r1]
     out_r1 <- out_r1[ind_r1]
@@ -134,7 +134,7 @@ two.opt <- function(alpha1, alpha2, pc, n, sf = "Pocock", ...){
   }
   # merge results
   if(is.null(comb)){
-    stop("No optimal design")
+    stop("No optimal design (left side)")
   } else {
     rs <- c("r1", "r2", "r3", "s1", "s2", "s3")
     err1 <- c("alpha11", "alpha12", "alpha13", "alpha21", "alpha22", "alpha23")

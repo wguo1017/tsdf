@@ -18,7 +18,7 @@ right.opt <- function(alpha, pc, n, sf = "Pocock", ...){
   ind_s1 <- which(out_s1 <= as_right[1])
   # check if condition holds
   if(length(ind_s1)==0) {
-    return(print("No optimal design"))
+    return(print("No optimal design (right side)"))
   } else {
     s1 <- s1_bdry[ind_s1]
     out_s1 <- out_s1[ind_s1]
@@ -76,7 +76,7 @@ right.opt <- function(alpha, pc, n, sf = "Pocock", ...){
   }
   # merge results
   if(is.null(comb)){
-    return(print("No optimal design"))
+    return(print("No optimal design (right side)"))
   } else {
     rs <- c("s1", "s2", "s3")
     err1 <- c("alpha11", "alpha12", "alpha13")
