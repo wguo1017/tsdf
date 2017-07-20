@@ -16,6 +16,10 @@
 #' @import stats
 #' @import utils
 #' @export
+#' @examples
+#' dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+#' test.file <- system.file("extdata", "testS.csv", package = "tsdf")
+#' out <- sl.sim(dt$table, test.file)
 
 sl.sim <- function(decTable, file, header = FALSE, sep = ",") {
   sl <- read.table(file, header, sep)
