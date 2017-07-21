@@ -1,0 +1,118 @@
+---
+title: "Quick Start Guide"
+author: "Wenchuan Guo and Bob Zhong"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    theme: united
+    highlight: tango
+vignette: >
+  %\VignetteIndexEntry{Quick Start Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This guide introduces the basic usage of `tsdf`. For more details, see the documentation for individual functions.
+
+## Installation
+`tsdf` now is only available on GitHub and we will upload the package to CRAN after we run more tests on the functions. Type the following command in R console :
+```{r, eval=FALSE}
+#check if devtools is installed
+if(!"devtools" %in% rownames(installed.packages())){
+	install.packages(devtools)
+}
+devtools::install_github("wguo1990/tsdf")
+```
+Then the R package will be downloaded and installed to the default directories. Run the following command to load the package :
+```{r}
+library(tsdf)
+```
+We will briefy go over main functions and their basic usage in the following sections.
+
+## Generate decision table
+`dec.table` function function is used to generate decision table for a three-stage dose-finding design. `alpha.l` (left side), `alpha.r` (right side), `alpha.u` (right side type 1 error for "DU", usually less than `alpha.r`) are three type 1 errors control the boundary of decisions. `pc` and `pc.u` are both target toxicity level where the latter controls the boundary of decision "DU" in the table. `pc` is either an internal or a single value which depends on what design you want to use. If `pc` is just a single value, for most cases, users may choose `pc = pc.u`. We call `dec.table` function as follows 
+```{r}
+# sample size 
+n <- rep(3, 3)
+# type 1 erros 
+alpha.l <- 0.6
+alpha.r <- 0.4
+alpha.u <- 0.2
+# target toxicity 
+pc <- 0.3
+pc.u <- pc
+# call dec.table
+out <- dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)
+```
+`out` is an object of class `dec.table` that contains all the relevant information including decision table, real type errors and input parameter. However, we do not recommend users to extract the components from this object directly. `plot` and `print` S3 method are available for `dec.table` class. 
+
+We can view the decision table using `print` function :
+```{r}
+print(out)
+```
+or visualize the decision table by executing the `plot` function :
+```{r fig.width=7, fig.height=6, fig.align='center'}
+plot(out)
+```
+
+## Run dose-finding simulations
+There are two functions allow users to run dose-finding simulations using a user supplied decision table: `dec.sim` and `sl.sim`. To run simulations, users need to provide true probability of toxicity at each dose level, starting dose (default to lowest dose level) and number of simulated trials (default to 1000). 
+
+`dec.sim` runs one scenario simulation which is usually used for a initial test and `sl.sim` runs a list of scenarios from `.csv` or `.txt` files (See next section Data Format for details). Let's see a toy example :
+```{r}
+# true toxicity
+truep <- c(0.3, 0.45, 0.5, 0.6)
+# generate a decision table
+dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+# run simulation
+out1 <- dec.sim(truep, dt$table, start.level = 2, nsim = 1000)
+```
+The following command loads a sample scenarios list in `tsdf` package :
+```{r}
+test.file <- system.file("extdata", "testS.csv", package = "tsdf")
+```
+Run simulations using `sl.sim` :
+```{r}
+out2 <- sl.sim(dt$table, test.file)
+```
+`out1` and `out2` are both `dec.sim` class object. `out2` is also a class of `sl.sim` when the scenarios is more than 2. S3 method `summary` and `plot` are availiale for this class. For example, a summary of commonly used statistics is reported if we use the `summary` function :
+```{r}
+# target toxicity 
+pt <- rep(0.3, 2)
+summary(out2, pt)
+```
+There are four different type of plots for `dec.sim` object where option `s` indicates the number of scenario you want to plot and `pt` is the target toxicity for each scenario, see details in `plot.dec.sim` R documentation:
+```{r fig.width=6, fig.height=5, fig.align='center'}
+# input information (true toxicity)
+plot(out2, s = 2, pt = rep(0.3,2), type="s")
+# probability of selecting as MTD at each dose level
+plot(out2, s = 2, pt = rep(0.3,2), type = "prob")
+# average number of patients treated at each dose level
+plot(out2, s = 2, pt = rep(0.3,2), type = "np")
+# number of DLTs experienced at each dose level
+plot(out2, s = 2, pt = rep(0.3,2), type="dlt")
+```
+
+There is a built-in function to put all different plots on same figure, simply run
+```{r fig.width=7, fig.height=8, fig.align='center'}
+plot(out2, pt = rep(0.3,2), type = "all", cex = 0.7)
+```
+
+## Data format
+The `.csv` or `.txt` files used for `sl.sim` should have the following format (don't need `NA` in the raw data) 
+```{r, echo=FALSE, results='asis'}
+sl <- system.file("extdata", "testS.csv", package = "tsdf")
+knitr::kable(read.table(sl, header = TRUE, sep = ","))
+```
+
+The column name of a decision table should be the actual sample size instead of the standard import of `read.table` which has column name `X.*` or `V.*`. The following command reads the sample decision table in the package : 
+```{r, warning=FALSE}
+table.file <- system.file("extdata", "decTable.csv", package = "tsdf")
+dec <- read.table(table.file, sep = ",", col.names = c(3,4,8,10), row.names = 1, check.names = FALSE)
+```
+
+Although there are many ways to import a decision table from `.csv` or `.txt` files, a typical decision table used for `dev.sim` and `sl.sim` functions have to have the following format :  
+```{r, echo=FALSE}
+knitr::kable(dec)
+```
+
