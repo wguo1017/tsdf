@@ -24,7 +24,7 @@ dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf = "Pocock")
 \item{...}{Not used argument.}
 }
 \value{
-An object of class "decision.table" is a list containing:
+An object of class "dec.table" is a list containing:
  \item{table}{the generated decision table.}
  \item{alpha.two}{a vector of true type 1 error for two-tailed test.}
  \item{E}{a vector of "E" bound.}
