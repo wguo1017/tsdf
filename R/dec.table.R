@@ -8,7 +8,7 @@
 #' @param n A vector of sample size at each stage. \code{sum(n)} is the total sample size.
 #' @param sf The alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.
 #' @param ... Not used argument.
-#' @return An object of class "decision.table" is a list containing:
+#' @return An object of class "dec.table" is a list containing:
 #'  \item{table}{the generated decision table.}
 #'  \item{alpha.two}{a vector of true type 1 error for two-tailed test.}
 #   \item{alpha.one}{a vector of true type 1 error for right-tailed test.}
