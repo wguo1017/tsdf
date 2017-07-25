@@ -1,3 +1,9 @@
+# tsdf 1.0-4
+- fiexed bugs when target prob is less than the lowest toxicity probability
+- added prob. of no selection in the output of summary.dec.sim
+- changed color in plot.dec.table
+- "sl.sim" now doesn't need taget toxicity
+
 # tsdf 1.0-3
 - added a sample decision table in \inst\extdata
 - added vignettes
