@@ -16,3 +16,13 @@
 \description{
 \code{summary} method for class \code{"dec.sim"}.
 }
+\details{
+\code{summary} is used for formating important statistics for dose-finding simulation. Giving the target toxicity, it returns the probability of selecting current dose level as the MTD, probability of selecting the true MTD, probability of subjects treated at or below the true MTD, etc. The MTD is defined as the highest dose level such that the toxicity probability is less than target toxicity probability, if target is less than the smallest probability, then the lowest dose level is set as MTD. For example, if target is 0.3 and true toxicity for five doses are 0.1, 0.25, 0.35, 0.40, then MTD is dose 2.
+}
+\examples{
+test.file <- system.file("extdata", "testS.csv", package = "tsdf")
+dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+out <- sl.sim(dt$table, test.file)
+pt <- c(0.3, 0.4)
+summary(out, pt)
+}

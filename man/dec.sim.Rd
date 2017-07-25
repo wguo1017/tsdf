@@ -2,7 +2,7 @@
 % Please edit documentation in R/dec.sim.R
 \name{dec.sim}
 \alias{dec.sim}
-\title{Dose-finding simulations}
+\title{run dose-finding simulations}
 \usage{
 dec.sim(truep, decTable, start.level = 1, nsim = 1000)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dec.table.R
 \name{dec.table}
 \alias{dec.table}
-\title{Generate three stage dose finding decision table}
+\title{generate three-stage dose-finding decision table}
 \usage{
 dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf = "Pocock")
 }
