@@ -31,7 +31,7 @@ sl.sim <- function(decTable, file, header = TRUE, sep = ",", ...) {
   out <- lapply(1:nrow(sl), function(i){
     info <- sl[i, ][!is.na(sl[i, ])]
     n.info <- length(info)
-    dec.sim(info[4:n.info], decTable, info[2], info[3])
+    dec.sim(info[3:n.info], decTable, info[1], info[2])
   })
   if(nrow(sl) > 1) {
     class(out) <- c("sl.sim", "dec.sim")
@@ -40,3 +40,4 @@ sl.sim <- function(decTable, file, header = TRUE, sep = ",", ...) {
   }
   return(out)
 }
+
