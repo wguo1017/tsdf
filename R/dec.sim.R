@@ -1,4 +1,4 @@
-#' Dose-finding simulations
+#' run dose-finding simulations
 #' @description Run dose-finding simulations based on a customized decision table.
 #' @param truep A vector of length k (the number of doses being considered in the trial), with values equal to the true probabilities of toxicity at the dose levels.
 #' @param decTable A customized decision table. (same format as output of \code{\link{dec.table}})
@@ -41,7 +41,7 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
     dose <- start.level
     # stage current dose at
     sample.stage <- rep(1, n_dose)
-    while(mtd[i] == 0){
+    while(mtd[i] == 0 & !is.na(mtd[i])){
       add.sample <- add[sample.stage[dose]]
       np[i, dose] <- np[i, dose] + add.sample
       dlt[i, dose] <- dlt[i, dose] + sum(rbinom(add.sample, 1, truep[dose]))
@@ -88,7 +88,7 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
             mtd[i] <- dose -1 
           }
         } else {
-          mtd[i] <- dose
+          mtd[i] <- NA
         }
       }
       # case : de-escalate (DU)
@@ -102,14 +102,13 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
             mtd[i] <- dose -1 
           }
         } else {
-          mtd[i] <- dose
+          mtd[i] <- NA
         }
       }
     }		
   }
-  mtd.prob <- sapply(1:n_dose, function(ii) mean(mtd==ii))
+  mtd.prob <- sapply(1:n_dose, function(ii) sum(mtd == ii, na.rm = TRUE)/nsim)
   out <- list(mtd = mtd, mtd.prob = mtd.prob, dlt = colMeans(dlt), n.patients = colMeans(np), truep = truep, start.level = start.level, nsim = nsim)
   class(out) <- "dec.sim"
   return(out)
 }
-
