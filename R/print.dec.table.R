@@ -7,8 +7,8 @@
 print.dec.table <- function(x, ...) {
   print(x$table)
   cat("\n")
-  cat("Column : Number of DLTs", "\n")
-  cat("   Row : Number of patients at current stage", "\n")
+  cat("	  Row : Number of DLTs", "\n")
+  cat("Column : Number of subjects", "\n")
   cat("     E : Escalate to the next higher dose", "\n")
   cat("     S : Stay at the same dose", "\n")
   cat("     D : De-escalate to the previous lower dose", "\n")
