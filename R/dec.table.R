@@ -1,4 +1,4 @@
-#' Generate three stage dose finding decision table
+#' generate three-stage dose-finding decision table
 #' @description Generate three stage dose finding decision table
 #' @param alpha.l Left-side overall type 1 error. Control the upper bound of dose escalation.
 #' @param alpha.r Right-side overall type 1 error. Control the lower bound of dose de-escalatition.
