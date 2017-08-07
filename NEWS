@@ -1,3 +1,7 @@
+# tsdf 1.0-5
+- bug fixes
+- added two-stage designs
+
 # tsdf 1.0-4
 - fiexed bugs when target prob is less than the lowest toxicity probability
 - added prob. of no selection in the output of summary.dec.sim

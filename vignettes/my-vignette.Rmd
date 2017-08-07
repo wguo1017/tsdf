@@ -8,7 +8,6 @@ output:
     fig_width: 7
     highlight: tango
     theme: united
-  pdf_document: default
 vignette: |
   %\VignetteEngine{knitr::knitr} %\VignetteIndexEntry{Quick Start Guide} %\usepackage[UTF-8]{inputenc}
 ---

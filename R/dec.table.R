@@ -36,6 +36,7 @@
 dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
   # check
   err <- c(alpha.l, alpha.r, alpha.u)
+  k <- length(n)
   if(sum(err < 0 | err > 1) != 0) {
     stop("'alpha' should between 0 and 1.")
   }
@@ -48,15 +49,21 @@ dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
   if(length(pc.u) != 1) {
     stop("'pc.u''s length should be 1 (right-tailed test).")
   }
-  if(length(n)!=3) {
-    stop("This function only find three-stage optimal design")
+  if(k != 3 & k != 2) {
+    stop("This function only find two-stage/three-stage optimal design")
   }
   if(sf != "Pocock" & sf != "OF" & !is.function(sf)){
     stop("'sf' should be either 'OF', 'Pocock' or a user specified spending function" )
   }
-  out.two <- two.opt(alpha.l, alpha.r, pc, n, sf)
-  out.one <- right.opt(alpha.u, pc.u, n, sf)
-  des <- list(E = out.two$out[1, 1:3], D = out.two$out[1, 4:6], DU = out.one$out[1, 1:3],  n = n, pc = pc, pc.u = pc.u, sf = sf, alpha.two = out.two$out[1, 7:12], alpha.one = out.one$out[1, 4:6])
+  if(k == 3) {
+    out.two <- three.opt(alpha.l, alpha.r, pc, n, sf)
+    out.one <- right.three.opt(alpha.u, pc.u, n, sf)
+  } else {
+    out.two <- two.opt(alpha.l, alpha.r, pc, n, sf)
+    out.one <- right.two.opt(alpha.u, pc.u, n, sf)
+  }
+  
+  des <- list(E = out.two$out[1, 1:k], D = out.two$out[1, (k+1):(2*k)], DU = out.one$out[1, 1:k],  n = n, pc = pc, pc.u = pc.u, sf = sf, alpha.two = out.two$out[1, (2*k+1):(4*k)], alpha.one = out.one$out[1, (k+1):(2*k)])
   r <- des$E
   s <- des$D
   su <- des$DU
@@ -70,9 +77,52 @@ dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
     ans[ ,j][1:(r[j]+1)] <- "E"
     ans[ ,j][(s[j]+2):(nc[j]+1)] <- "D"
     ans[ ,j][(su[j]+2):(nc[j]+1)] <- "DU"
-    ans[ ,j][(r[j]+2):(s[j]+1)] <- "S"
+    ans[ ,j][which(ans[, j] ==0)] <- "S"
+    ind.s <- (1:(nc[k]+1)) > nc[j]+1
+    ans[ , ][ind.s] <- rep("0", sum(ind.s))
   }
   out <- c(des, list(table=as.table(ans)))
   class(out) <- "dec.table"
   return(out)
+}
+
+
+#' plot decision table from a "dec.table" object.
+#' @description \code{plot} method for class "\code{dec.table}"
+#' @param x an object of class \code{"dec.table"}, a result of a call to \code{dec.table}.
+#' @param ... Not used argument.
+#' @details \code{plot.dec.table} prints the decision boundarys.
+#' @import graphics
+#' @export
+plot.dec.table <- function(x, ...) {
+  n <- x$n
+  nc <- cumsum(n)
+  r <- x$E
+  s <- x$D
+  su <- x$DU
+  col <- c("green", "gold2", "red", "beige")
+  plot(nc, r, xaxt = "n", ylab = "Boundary", xlab = 'Sample Size', ylim = c(0, max(su)+2), type = "o", col=col[1], main = "Decision Plot", panel.first = grid())
+  points(nc, s + 1, type = "o", col = col[2])
+  points(nc, su + 1, type = "o", col = col[3])
+  axis(1, at = nc, labels = nc)
+  polygon(c(nc, rev(nc)), c(r + 0.05, rev(s + 1 - 0.05)), col = col[4], border = NA)
+  legend("topleft", c("E (<=)", "D (>=)", "DU (>=)", "S"), fill = col)
+}
+
+
+#' print decision table from a "dec.table" object.
+#' @description \code{print} method for class "\code{dec.table}"
+#' @param x an object of class \code{"dec.table"}, a result of a call to \code{dec.table}.
+#' @param ... Not used argument.
+#' @details \code{print.dec.table} prints the decision table with legend keys.
+#' @export
+print.dec.table <- function(x, ...) {
+  print(x$table)
+  cat("\n")
+  cat("	  Row : Number of DLTs", "\n")
+  cat("Column : Number of subjects", "\n")
+  cat("     E : Escalate to the next higher dose", "\n")
+  cat("     S : Stay at the same dose", "\n")
+  cat("     D : De-escalate to the previous lower dose", "\n")
+  cat("    DU : De-escalate and never use this dose again", "\n")
 }
