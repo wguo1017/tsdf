@@ -1,3 +1,8 @@
+# tsdf 1.0-6
+- bug fixes
+- changed algorithm in internal functions 
+- removed type 2 error 
+
 # tsdf 1.0-5
 - bug fixes
 - added two-stage designs

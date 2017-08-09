@@ -63,7 +63,7 @@ dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
     out.one <- right.two.opt(alpha.u, pc.u, n, sf)
   }
   
-  des <- list(E = out.two$out[1, 1:k], D = out.two$out[1, (k+1):(2*k)], DU = out.one$out[1, 1:k],  n = n, pc = pc, pc.u = pc.u, sf = sf, alpha.two = out.two$out[1, (2*k+1):(4*k)], alpha.one = out.one$out[1, (k+1):(2*k)])
+  des <- list(E = out.two$bdry[1:k], D = out.two$bdry[(k+1):(2*k)], DU = out.one$bdry,  n = n, pc = pc, pc.u = pc.u, sf = sf, alpha.two = out.two$error, alpha.one = out.one$error)
   r <- des$E
   s <- des$D
   su <- des$DU
@@ -84,45 +84,4 @@ dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
   out <- c(des, list(table=as.table(ans)))
   class(out) <- "dec.table"
   return(out)
-}
-
-
-#' plot decision table from a "dec.table" object.
-#' @description \code{plot} method for class "\code{dec.table}"
-#' @param x an object of class \code{"dec.table"}, a result of a call to \code{dec.table}.
-#' @param ... Not used argument.
-#' @details \code{plot.dec.table} prints the decision boundarys.
-#' @import graphics
-#' @export
-plot.dec.table <- function(x, ...) {
-  n <- x$n
-  nc <- cumsum(n)
-  r <- x$E
-  s <- x$D
-  su <- x$DU
-  col <- c("green", "gold2", "red", "beige")
-  plot(nc, r, xaxt = "n", ylab = "Boundary", xlab = 'Sample Size', ylim = c(0, max(su)+2), type = "o", col=col[1], main = "Decision Plot", panel.first = grid())
-  points(nc, s + 1, type = "o", col = col[2])
-  points(nc, su + 1, type = "o", col = col[3])
-  axis(1, at = nc, labels = nc)
-  polygon(c(nc, rev(nc)), c(r + 0.05, rev(s + 1 - 0.05)), col = col[4], border = NA)
-  legend("topleft", c("E (<=)", "D (>=)", "DU (>=)", "S"), fill = col)
-}
-
-
-#' print decision table from a "dec.table" object.
-#' @description \code{print} method for class "\code{dec.table}"
-#' @param x an object of class \code{"dec.table"}, a result of a call to \code{dec.table}.
-#' @param ... Not used argument.
-#' @details \code{print.dec.table} prints the decision table with legend keys.
-#' @export
-print.dec.table <- function(x, ...) {
-  print(x$table)
-  cat("\n")
-  cat("	  Row : Number of DLTs", "\n")
-  cat("Column : Number of subjects", "\n")
-  cat("     E : Escalate to the next higher dose", "\n")
-  cat("     S : Stay at the same dose", "\n")
-  cat("     D : De-escalate to the previous lower dose", "\n")
-  cat("    DU : De-escalate and never use this dose again", "\n")
 }

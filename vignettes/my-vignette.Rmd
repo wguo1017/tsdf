@@ -3,6 +3,7 @@ title: "Quick Start Guide"
 author: "Wenchuan Guo and Bob Zhong"
 date: '`r Sys.Date()`'
 output:
+  pdf_document: null
   html_document:
     fig_height: 6
     fig_width: 7
@@ -30,7 +31,7 @@ library(tsdf)
 We will briefly go over main functions and their basic usage in the following sections.
 
 ## Generate decision table
-`dec.table` function is used to generate decision table for a three-stage dose-finding design. `alpha.l` (left side), `alpha.r` (right side), `alpha.u` (right side type 1 error for "DU", usually less than `alpha.r`) are three type 1 errors control the boundary of decisions. `pc` and `pc.u` are both target toxicity level where the latter controls the boundary of decision "DU" in the table. `pc` is either an internal or a single value which depends on what design you want to use. If `pc` is just a single value, for most cases, users may choose `pc = pc.u`. We call `dec.table` function as follows 
+`dec.table` function is used to generate decision table for a three-stage dose-finding design. `alpha.l` (left side), `alpha.r` (right side), `alpha.u` (right side type 1 error for "DU", usually less than `alpha.r`) are three type 1 errors control the boundary of decisions. `pc` and `pc.u` are both target toxicity level where the latter controls the boundary of decision "DU" in the table. `pc` is either a single or an interval value. If `pc` is just a single value, for most cases, users may choose `pc = pc.u`. We call `dec.table` function as follows 
 ```{r}
 # sample size 
 n <- rep(3, 3)
