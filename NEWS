@@ -1,7 +1,12 @@
+# tsdf 1.0-7
+- added Zhong's 2-/3-stage designs (opt.design function)
+- added S3 method for `opt.design`
+- updated vignettes
+
 # tsdf 1.0-6
 - bug fixes
 - changed algorithm in internal functions 
-- removed type 2 error 
+- removed type 2 error in calculating decision table
 
 # tsdf 1.0-5
 - bug fixes

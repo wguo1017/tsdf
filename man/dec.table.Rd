@@ -7,21 +7,21 @@
 dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf = "Pocock")
 }
 \arguments{
-\item{alpha.l}{Left-side overall type 1 error. Control the upper bound of dose escalation.}
+\item{alpha.l}{left-side overall type 1 error. Control the upper bound of dose escalation.}
 
-\item{alpha.r}{Right-side overall type 1 error. Control the lower bound of dose de-escalatition.}
+\item{alpha.r}{right-side overall type 1 error. Control the lower bound of dose de-escalatition.}
 
-\item{alpha.u}{Right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for "DU".}
+\item{alpha.u}{right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for "DU".}
 
-\item{pc}{A numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).}
+\item{pc}{a numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).}
 
-\item{pc.u}{A numeric vector of target toxicity which is used to obtain "DU" in the decision table.}
+\item{pc.u}{a numeric vector of target toxicity which is used to obtain "DU" in the decision table.}
 
-\item{n}{A vector of sample size at each stage. \code{sum(n)} is the total sample size.}
+\item{n}{a vector of sample size at each stage. \code{sum(n)} is the total sample size.}
 
-\item{sf}{The alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.}
+\item{sf}{the alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.}
 
-\item{...}{Not used argument.}
+\item{...}{not used argument.}
 }
 \value{
 An object of class "dec.table" is a list containing:
