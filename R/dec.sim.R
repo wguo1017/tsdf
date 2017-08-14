@@ -1,10 +1,10 @@
 #' run dose-finding simulations
 #' @description Run dose-finding simulations based on a customized decision table.
-#' @param truep A vector of length k (the number of doses being considered in the trial), with values equal to the true probabilities of toxicity at the dose levels.
-#' @param decTable A customized decision table. (same format as output of \code{\link{dec.table}})
-#' @param start.level Starting dose level. Defaults to 1, i.e. the lowest dose level.
-#' @param nsim The number of simulation trials. Defaults to 1000.
-#' @return The functions \code{\link{summary.dec.sim}} is used to obtain and print a summary table of the results (recommended). An object of class \code{"dec.sim"} is a list containing:
+#' @param truep a vector of length k (the number of doses being considered in the trial), with values equal to the true probabilities of toxicity at the dose levels.
+#' @param decTable a customized decision table. (same format as output of \code{\link{dec.table}})
+#' @param start.level starting dose level. Defaults to 1, i.e. the lowest dose level.
+#' @param nsim the number of simulation trials. Defaults to 1000.
+#' @return the functions \code{\link{summary.dec.sim}} is used to obtain and print a summary table of the results (recommended). An object of class \code{"dec.sim"} is a list containing:
 #'  \item{mtd}{a vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}
 #'  \item{mtd.prob}{a vector of length \code{k} giving the average proportions of selected as MTD at each dose level}
 #'  \item{n.patients}{the average number of patients dosed at each level.}

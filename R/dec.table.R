@@ -1,13 +1,13 @@
 #' generate three-stage dose-finding decision table
 #' @description Generate three stage dose finding decision table
-#' @param alpha.l Left-side overall type 1 error. Control the upper bound of dose escalation.
-#' @param alpha.r Right-side overall type 1 error. Control the lower bound of dose de-escalatition.
-#' @param alpha.u Right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for "DU".
-#' @param pc A numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).
-#' @param pc.u A numeric vector of target toxicity which is used to obtain "DU" in the decision table.
-#' @param n A vector of sample size at each stage. \code{sum(n)} is the total sample size.
-#' @param sf The alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.
-#' @param ... Not used argument.
+#' @param alpha.l left-side overall type 1 error. Control the upper bound of dose escalation.
+#' @param alpha.r right-side overall type 1 error. Control the lower bound of dose de-escalatition.
+#' @param alpha.u right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for "DU".
+#' @param pc a numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).
+#' @param pc.u a numeric vector of target toxicity which is used to obtain "DU" in the decision table.
+#' @param n a vector of sample size at each stage. \code{sum(n)} is the total sample size.
+#' @param sf the alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.
+#' @param ... not used argument.
 #' @return An object of class "dec.table" is a list containing:
 #'  \item{table}{the generated decision table.}
 #'  \item{alpha.two}{a vector of true type 1 error for two-tailed test.}
