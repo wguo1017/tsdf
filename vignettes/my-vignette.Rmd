@@ -3,12 +3,12 @@ title: "Quick Start Guide"
 author: "Wenchuan Guo and Bob Zhong"
 date: '`r Sys.Date()`'
 output:
-  pdf_document: null
   html_document:
     fig_height: 6
     fig_width: 7
     highlight: tango
     theme: united
+  pdf_document: null
 vignette: |
   %\VignetteEngine{knitr::knitr} %\VignetteIndexEntry{Quick Start Guide} %\usepackage[UTF-8]{inputenc}
 ---
@@ -30,12 +30,32 @@ library(tsdf)
 ```
 We will briefly go over main functions and their basic usage in the following sections.
 
-## Generate decision table
-`dec.table` function is used to generate decision table for a three-stage dose-finding design. `alpha.l` (left side), `alpha.r` (right side), `alpha.u` (right side type 1 error for "DU", usually less than `alpha.r`) are three type 1 errors control the boundary of decisions. `pc` and `pc.u` are both target toxicity level where the latter controls the boundary of decision "DU" in the table. `pc` is either a single or an interval value. If `pc` is just a single value, for most cases, users may choose `pc = pc.u`. We call `dec.table` function as follows 
+## Zhong's 2-/3-stage Phase II designs
+To calculate Zhong's two-/three-stage design, users need to provide : left-side type I error(`alpha1`), right-side type I error(`alpha2`), type II error(`beta`), minimal response rate(`pc`) and unacceptable response rate(`pt`, alternative). The minimal response rate can be either single point or an interval. `stage` option specify 2 or 3 stage design. Run the following command to obtain a 2-stage design
+```{r}
+# type I errors
+alpha1 <- 0.15
+alpha2 <- 0.10
+# type II error
+beta <- 0.15
+# response rate
+pc <- 0.25
+# alternative 
+pt <- pc + 0.20
+# 2-stage design
+out <- opt.design(alpha1, alpha2, beta, pc, pt, stage=2)
+```
+`out` is an object of class `opt.design`. S3 method `print` is available for  `opt.design` class. To extract information, run 
+```{r}
+print(out)
+```
+
+## Decision table for Phase I dose-finding
+`dec.table` function is used to generate decision table for a three-stage dose-finding design. `alpha.l` (left side), `alpha.r` (right side), `alpha.u` (right side type I error for "DU", usually less than `alpha.r`) are three type I errors control the boundary of decisions. `pc` and `pc.u` are both target toxicity level where the latter controls the boundary of decision "DU" in the table. `pc` is either a single or an interval value. If `pc` is just a single value, for most cases, users may choose `pc = pc.u`. We call `dec.table` function as follows 
 ```{r}
 # sample size 
 n <- rep(3, 3)
-# type 1 errors 
+# type I errors 
 alpha.l <- 0.6
 alpha.r <- 0.4
 alpha.u <- 0.2
@@ -56,7 +76,7 @@ or visualize the decision table by executing the `plot` function :
 plot(out)
 ```
 
-## Run dose-finding simulations
+## Dose-finding simulations
 There are two functions that allow users to run dose-finding simulations using a user supplied decision table: `dec.sim` and `sl.sim`. To run simulations, users need to provide a decision table either from `dec.table` function or a user-supplied table (see details in next section), true probability of toxicity at each dose level, starting dose (default to lowest dose level) and number of simulated trials (default to 1000). 
 
 `dec.sim` runs one scenario simulation which is usually used for an initial test and `sl.sim` runs a list of scenarios from `.csv` or `.txt` files (See next section Data Format for details). Let's see an example :
@@ -99,7 +119,7 @@ There is a built-in function to put all different plots on same figure, simply r
 plot(out2, pt = c(0.3, 0.4), type = "all", cex = 0.7)
 ```
 
-## Data format
+## Scenarios list/customized table format
 The `.csv` or `.txt` files used for `sl.sim` look like :
 ```{r echo=FALSE, results='asis'}
 sl <- system.file("extdata", "testS.csv", package = "tsdf")

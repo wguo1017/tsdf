@@ -207,3 +207,26 @@ summary.dec.sim <- function(object, pt, ...) {
     cat("\n")
   }
 }
+
+
+
+#' print Zhong's design from a "opt.design" object.
+#' @description \code{print} method for class "\code{opt.design}"
+#' @param x an object of class \code{"opt.design"}, a result of a call to \code{opt.design}.
+#' @param ... not used argument.
+#' @export
+print.opt.design <- function(x, ...) {
+  cat("\n Zhong's", x$stage,"stage Phase II design \n\n")
+  cat("Minimal response rate: ", unique(x$pc), "\n")
+  cat("Unacceptable response rate: ", x$pt, "\n")
+  cat("Left-side type 1 error: ",x$alpha1, "\n")
+  cat("Right-side type 1 error: ",x$alpha2, "\n")
+  cat("Type 2 error: ",x$beta, "\n\n")
+  cat("Optimal design : ", "\n")
+  print(c(x$bdry, x$n))
+  cat("True errors : ", "\n")
+  print(x$error)
+  cat("\n")
+}
+
+
