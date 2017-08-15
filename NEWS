@@ -1,3 +1,8 @@
+# tsdf 1.0-8
+- changed definition of MTD in "dec.sim"
+- "summary.dec.sim" is now more accurate
+- changed "plot.dec.table"
+
 # tsdf 1.0-7
 - added Zhong's 2-/3-stage designs (opt.design function)
 - added S3 method for `opt.design`

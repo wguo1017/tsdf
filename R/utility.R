@@ -4,21 +4,24 @@
 #' @param ... Not used argument.
 #' @details \code{plot.dec.table} prints the decision boundarys.
 #' @import graphics
-#' @export
 plot.dec.table <- function(x, ...) {
   n <- x$n
   nc <- cumsum(n)
   r <- x$E
   s <- x$D
   su <- x$DU
-  col <- c("green", "gold2", "red", "beige")
-  plot(nc, r, xaxt = "n", ylab = "Boundary", xlab = 'Sample Size', ylim = c(0, max(su)+2), type = "o", col=col[1], main = "Decision Plot", panel.first = grid())
+  col <- c("cadetblue1", "darkorchid2", "indianred2", "seagreen2")
+  plot(nc, r, xaxt = "n", ylab = "Boundary", xlab = 'Sample Size', ylim = c(0, max(su)+2.3), type = "o", col=col[1], main = "Decision Plot", panel.first = grid())
   points(nc, s + 1, type = "o", col = col[2])
   points(nc, su + 1, type = "o", col = col[3])
   axis(1, at = nc, labels = nc)
   polygon(c(nc, rev(nc)), c(r + 0.05, rev(s + 1 - 0.05)), col = col[4], border = NA)
-  legend("topleft", c("E (<=)", "D (>=)", "DU (>=)", "S"), fill = col)
+  polygon(c(nc, rev(nc)), c(rep(0,length(nc)), rev(r - 0.05)), col = col[1], border = NA)
+  polygon(c(nc, rev(nc)), c(s + 1 + 0.05, rev(su + 1 - 0.05)), col = col[2], border = NA)
+  polygon(c(nc, rev(nc)), c(su + 1 + 0.05, rev(rep(max(su)+2, length(nc)))), col = col[3], border = NA)
+  legend("top", c("E (<=)", "D (>=)", "DU (>=)", "S"), horiz = TRUE, fill = col)
 }
+
 
 #' print decision table from a "dec.table" object.
 #' @description \code{print} method for class "\code{dec.table}"
@@ -80,8 +83,15 @@ plot.dec.sim <- function(x, pt, s = 1, type = c("all", "s", "prob", "np", "dlt")
   else if (length(pt) != ns) {
     stop("true toxicity is a vector with length = # of cenarios")
   } else {
-    mtd <- max(which(truep <= pt[s]))
-    names.arg[mtd] <- paste(mtd, "(MTD)")
+    if(max(truep) < pt[s]) {
+      print("MTD is higher than highest dose")
+    } else if(min(truep) > pt[s]) {
+      print("MTD is lower than lowest dose")
+    } 
+    else {
+      mtd <- max(which(truep <= pt[s]))
+      names.arg[mtd] <- paste(mtd, "(MTD)")
+    }
   }
   if (type == "all") {
     par(mfrow = c(2, 2), cex = cex)
@@ -91,7 +101,8 @@ plot.dec.sim <- function(x, pt, s = 1, type = c("all", "s", "prob", "np", "dlt")
     plot(x, pt, s, "np", label, col, text.col, cex, ...)		
   }
   if (type == "prob") {
-    ans <- obj$mtd.prob
+    ans <- obj$mtd.prob[1:n_dose]
+    names(ans) <- NULL
     out <- barplot(rep(NA, n_dose), xlab = "Dose level", names.arg = names.arg, panel.first = box(), ylim = c(0, max(ans) * 1.1))
     grid()
     barplot(ans, add = TRUE, col = col)
@@ -151,8 +162,7 @@ plot.dec.sim <- function(x, pt, s = 1, type = c("all", "s", "prob", "np", "dlt")
 #' @export
 summary.dec.sim <- function(object, pt, ...) {
   if(missing(pt)) {
-    warning("Missing true toxicity; set to be 1.")
-    pt <- 1
+    stop("Missing true toxicity.")
   }
   if(class(object)[1] == "sl.sim" & length(object) != length(pt)) {
     warning("pt length not equal to number of scenarios; only returns the first scenario stats")
@@ -180,15 +190,19 @@ summary.dec.sim <- function(object, pt, ...) {
     colnames(res) <- c("Level", "Truth", "MTD", "DLT", "NP")
     res[, 1] <- 1:n_dose 
     res[, 2] <- truep
-    res[, 3] <- ans$mtd.prob
+    res[, 3] <- ans$mtd.prob[1:n_dose]
     res[, 4] <- ans$dlt
     res[, 5] <- ans$n.patients
     # calculate stats
     avg.np[i] <- sum(res[, 5])
-    if(sum(truep <= pt[i]) == 0) {
-      mtd.dose <- 1
-      avg.dose[i] <- res[, 3][mtd.dose]
-      avg.prob[i] <- res[,5][1] / sum(res[, 5])
+    if(max(truep) < pt[i]) {
+      mtd.dose <- "higher than highest dose"
+      avg.dose[i] <- ans$mtd.prob[6]
+      avg.prob[i] <- 1
+    } else if(min(truep) > pt[i]) {
+      mtd.dose <- "lower than lowest dose"
+      avg.dose[i] <- ans$mtd.prob[5]
+      avg.prob[i] <- 0
     } else {
       mtd.dose <- max(which(truep <= pt[i]))
       avg.dose[i] <- res[, 3][mtd.dose]
@@ -201,7 +215,6 @@ summary.dec.sim <- function(object, pt, ...) {
     cat("Target toxicity probability =", pt[i], "\n")
     cat("Average number of subjects =", avg.np[i], "\n")
     cat("Probability of selecting the true MTD =", avg.dose[i], "\n")
-    cat("Probability of no selection =", mean(is.na(ans$mtd)), "\n")
     cat("Probability of subjects treated at or below the true MTD =", avg.prob[i], "\n\n")
     print(as.data.frame(res))
     cat("\n")

@@ -75,7 +75,7 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
               }
             }
           } else {
-            mtd[i] <- dose
+            mtd[i] <- "U"
           }	
         }
       }
@@ -88,7 +88,7 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
             mtd[i] <- dose -1 
           }
         } else {
-          mtd[i] <- NA
+          mtd[i] <- "L"
         }
       }
       # case : de-escalate (DU)
@@ -102,12 +102,12 @@ dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
             mtd[i] <- dose -1 
           }
         } else {
-          mtd[i] <- NA
+          mtd[i] <- "L"
         }
       }
     }		
   }
-  mtd.prob <- sapply(1:n_dose, function(ii) sum(mtd == ii, na.rm = TRUE)/nsim)
+  mtd.prob <- sapply(c(1:n_dose, "L", "U"), function(ii) mean(mtd == ii))
   out <- list(mtd = mtd, mtd.prob = mtd.prob, dlt = colMeans(dlt), n.patients = colMeans(np), truep = truep, start.level = start.level, nsim = nsim)
   class(out) <- "dec.sim"
   return(out)
