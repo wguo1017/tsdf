@@ -4,6 +4,7 @@
 #' @param ... Not used argument.
 #' @details \code{plot.dec.table} prints the decision boundarys.
 #' @import graphics
+#' @export
 plot.dec.table <- function(x, ...) {
   n <- x$n
   nc <- cumsum(n)
@@ -63,7 +64,6 @@ print.dec.table <- function(x, ...) {
 #' plot(out, pt=rep(0.3,2), s=2, type="prob")
 #' plot(out, pt=rep(0.3,2), s=1, type="np")
 #' plot(out, pt=rep(0.3,2), s=2, type="dlt")
-
 plot.dec.sim <- function(x, pt, s = 1, type = c("all", "s", "prob", "np", "dlt"), label = TRUE, col = "cornflowerblue", text.col = "darkblue", cex = 1, ...) {
   type <- match.arg(type)
   if (class(x)[1] == "sl.sim") {
@@ -167,12 +167,6 @@ summary.dec.sim <- function(object, pt, ...) {
   if(class(object)[1] == "sl.sim" & length(object) != length(pt)) {
     warning("pt length not equal to number of scenarios; only returns the first scenario stats")
   }
-  cat("What does each column represent ?", "\n\n")
-  cat("Level : Dose level", "\n")
-  cat("Truth : True toxicity probability", "\n")
-  cat("MTD : The probability of selecting current dose level as the MTD", "\n")
-  cat("DLT : The average number of subjects experienced DLT at current dose level", "\n")
-  cat("NP : The average number of subjects treated at current dose level", "\n\n")
   ns <- length(pt)
   avg.np <- rep(0, ns)
   avg.dose <- rep(0, ns)
@@ -208,18 +202,36 @@ summary.dec.sim <- function(object, pt, ...) {
       avg.dose[i] <- res[, 3][mtd.dose]
       avg.prob[i] <-sum(res[, 5][truep <= pt[i]])/sum(res[, 5])
     }
+    
+    out[[i]] <- list(dose.stats = res, prob.select = avg.dose[i], at.below.mtd = avg.prob[i], mtd = mtd.dose, nsim = ans$nsim, pt = pt[i], avg.np = avg.np[i], start.level = ans$start.level)
+  }
+  class(out) <- "summary.dec.sim"
+  out
+}
+
+#' @keywords internal
+print.summary.dec.sim <- function(x, ...) {
+  cat("What does each column represent ?", "\n\n")
+  cat("Level : Dose level", "\n")
+  cat("Truth : True toxicity probability", "\n")
+  cat("MTD : The probability of selecting current dose level as the MTD", "\n")
+  cat("DLT : The average number of subjects experienced DLT at current dose level", "\n")
+  cat("NP : The average number of subjects treated at current dose level", "\n\n")
+  
+  for(i in 1:length(x)){
     # table legends
     cat("Scenario ", i, "\n\n")
-    cat("Simulation results are based on", ans$nsim, "simulated trials","\n")
-    cat("Starting dose level is", ans$start.level, "; MTD is dose", mtd.dose, "\n")
-    cat("Target toxicity probability =", pt[i], "\n")
-    cat("Average number of subjects =", avg.np[i], "\n")
-    cat("Probability of selecting the true MTD =", avg.dose[i], "\n")
-    cat("Probability of subjects treated at or below the true MTD =", avg.prob[i], "\n\n")
-    print(as.data.frame(res))
+    cat("Simulation results are based on", x[[i]]$nsim, "simulated trials","\n")
+    cat("Starting dose level is", x[[i]]$start.level, "; MTD is dose", x[[i]]$mtd, "\n")
+    cat("Target toxicity probability =", x[[i]]$pt, "\n")
+    cat("Average number of subjects =", x[[i]]$avg.np, "\n")
+    cat("Probability of selecting the true MTD =", x[[i]]$prob.select, "\n")
+    cat("Probability of subjects treated at or below the true MTD =", x[[i]]$at.below.mtd, "\n\n")
+    print(as.data.frame(x[[i]]$dose.stats ))
     cat("\n")
   }
 }
+
 
 
 

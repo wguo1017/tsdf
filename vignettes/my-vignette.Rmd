@@ -72,7 +72,7 @@ We can view the decision table using `print` function :
 print(out)
 ```
 or visualize the decision table by executing the `plot` function :
-```{r }
+```{r}
 plot(out)
 ```
 
