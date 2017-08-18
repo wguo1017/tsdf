@@ -209,7 +209,7 @@ summary.dec.sim <- function(object, pt, ...) {
   out
 }
 
-#' @keywords internal
+#' @export
 print.summary.dec.sim <- function(x, ...) {
   cat("What does each column represent ?", "\n\n")
   cat("Level : Dose level", "\n")

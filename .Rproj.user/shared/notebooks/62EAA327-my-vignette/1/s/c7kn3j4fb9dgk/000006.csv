@@ -1,0 +1,5 @@
+"0","out2 <- sl.sim(dt$table, test.file)
+"
+"2","file("""") only supports open = ""w+"" and open = ""w+b"": using the former"
+"2","Error in read.table(file, header, sep, ...) : no lines available in input
+"
