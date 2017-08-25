@@ -1,7 +1,11 @@
+# tsdf 1.0-9
+- bug fixes
+- initial release on CRAN
+
 # tsdf 1.0-8
 - changed definition of MTD in "dec.sim"
 - "summary.dec.sim" is now more accurate
-- changed "plot.dec.table"
+- changed color scheme in "plot.dec.table"
 
 # tsdf 1.0-7
 - added Zhong's 2-/3-stage designs (opt.design function)

@@ -1,8 +1,8 @@
 Package: tsdf
 Type: Package
-Title: Three stage dose finding 
-Version: 1.0-8
-Date: 2017-08-15
+Title: Three-stage Designs for Phase 1&2 Clinical Trials
+Version: 1.0-9
+Date: 2017-08-25
 Author: Wenchuan Guo, Bob Zhong
 Maintainer: Wenchuan Guo <wguo007@ucr.edu>
 Imports: gsDesign

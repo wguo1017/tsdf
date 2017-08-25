@@ -191,18 +191,17 @@ summary.dec.sim <- function(object, pt, ...) {
     avg.np[i] <- sum(res[, 5])
     if(max(truep) < pt[i]) {
       mtd.dose <- "higher than highest dose"
-      avg.dose[i] <- ans$mtd.prob[6]
+      avg.dose[i] <- ans$mtd.prob[n_dose+2]
       avg.prob[i] <- 1
     } else if(min(truep) > pt[i]) {
       mtd.dose <- "lower than lowest dose"
-      avg.dose[i] <- ans$mtd.prob[5]
+      avg.dose[i] <- ans$mtd.prob[n_dose+1]
       avg.prob[i] <- 0
     } else {
       mtd.dose <- max(which(truep <= pt[i]))
       avg.dose[i] <- res[, 3][mtd.dose]
       avg.prob[i] <-sum(res[, 5][truep <= pt[i]])/sum(res[, 5])
     }
-    
     out[[i]] <- list(dose.stats = res, prob.select = avg.dose[i], at.below.mtd = avg.prob[i], mtd = mtd.dose, nsim = ans$nsim, pt = pt[i], avg.np = avg.np[i], start.level = ans$start.level)
   }
   class(out) <- "summary.dec.sim"
@@ -247,11 +246,16 @@ print.opt.design <- function(x, ...) {
   cat("Left-side type 1 error: ",x$alpha1, "\n")
   cat("Right-side type 1 error: ",x$alpha2, "\n")
   cat("Type 2 error: ",x$beta, "\n\n")
+  cat("Notation:", "\n")
+  cat("Left-side rejection region at stage i is response <= ri", "\n")
+  cat("Right-side rejection region at stage", x$stage, "is response > s", "\n")
+  cat("Sample size used at stage i is ni", "\n\n")
   cat("Optimal design : ", "\n")
   print(c(x$bdry, x$n))
   cat("True errors : ", "\n")
   print(x$error)
   cat("\n")
 }
+
 
 
