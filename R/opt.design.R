@@ -3,12 +3,12 @@
 #' @param alpha1 left-side overall type I error. 
 #' @param alpha2 right-side overall type I error.
 #' @param beta type II error
-#' @param pc a numeric vector of response rate. Should be a vector with 1 or 2.
+#' @param pc a numeric vector of response rate. should be a vector with length 1 or 2.
 #' @param pt alternative hypothesis
 #' @param stage 2 or 3. default to 2 (2-stage design).
 #' @param frac_n1 proportion of n1. Used for 3-stage design. default to \code{c(0.2, 0.3)}, i.e. the range of \code{n1} is \code{0.2*n} to \code{0.3*n}
 #' @param frac_n2 proportion of n2. Used for 3-stage design. default to \code{c(0.2, 0.4)}.
-#' @param sf.param  A single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. for two-stage designs, default to \code{NULL}, alpha-spending is not used; for three-stage designs, default to 4.
+#' @param sf.param  a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. for two-stage designs, default to \code{NULL}, alpha-spending is not used; for three-stage designs, default to 4.
 #' @param show logical. If \code{TRUE}, current sample size is shown as total sample size increase. 
 #' @param nmax maximum sample size. default to 100.
 #' @param ... not used argument.
