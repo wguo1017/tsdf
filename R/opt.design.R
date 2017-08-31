@@ -8,24 +8,25 @@
 #' @param stage 2 or 3. default to 2 (2-stage design).
 #' @param frac_n1 proportion of n1. Used for 3-stage design. default to \code{c(0.2, 0.3)}, i.e. the range of \code{n1} is \code{0.2*n} to \code{0.3*n}
 #' @param frac_n2 proportion of n2. Used for 3-stage design. default to \code{c(0.2, 0.4)}.
-#' @param sf the alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.
+#' @param sf.param  A single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. for two-stage designs, default to \code{NULL}, alpha-spending is not used; for three-stage designs, default to 4.
 #' @param show logical. If \code{TRUE}, current sample size is shown as total sample size increase. 
+#' @param nmax maximum sample size. default to 100.
 #' @param ... not used argument.
 #' @return An object of class "opt.design" is a list containing:
 #'  \item{bdry}{rejection regions}
 #'  \item{error}{true type 1/2 errors}
 #'  \item{n}{sample size at each stage} 
-#'  \item{alpha1}{input; left-side type 1 error.}
-#'  \item{alpha2}{input; right-side type 1 error.}
-#   \item{beta}{input; type 2 error.}
+#'  \item{complete}{complete list of feasible designs}
+#'  \item{alpha1}{input; left-side type 1 error}
+#'  \item{alpha2}{input; right-side type 1 error}
+#'  \item{beta}{input; type 2 error}
 #'  \item{pc}{input; a vector of response rate.}
-#'  \item{pt}{input; a vector of alternative response rate.}
-#'  \item{sf}{input; the alpha-spending function used.}
-#'  \item{stage}{input; two or three stage}
+#'  \item{pt}{input; a vector of alternative response rate}
+#'  \item{sf}{input; the alpha-spending function used}
+#'  \item{stage}{input; two- or three- stage design is used}
 #' @author Wenchuan Guo <wguo007@ucr.edu>
 #' @references
 #' Zhong. (2012) Single-arm Phase IIA clinical trials with go/no-go decisions. \emph{Contemporary Clinical Trials}, \bold{33}, 1272--1279.
-#' @import gsDesign
 #' @import stats
 #' @export
 #' @examples 
@@ -39,7 +40,7 @@
 #'  opt.design(alpha1, alpha2, beta, pc, pt, stage=3, show=1)
 #' }
 
-opt.design <- function(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3), frac_n2 = c(0.2,0.4), sf = "Pocock", show = FALSE, ...) {
+opt.design <- function(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3), frac_n2 = c(0.2,0.4), sf.param = NULL, show = FALSE, nmax = 100, ...) {
   if(stage !=2 & stage !=3){
     stop("only support two and three stage designs")
   }
@@ -57,16 +58,13 @@ opt.design <- function(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2,
     frac_n1 <- c(0.2, 0.3)
     frac_n2 <- c(0.2,0.4)
   }
-  if(sf!="OF" & sf!="Pocock"){
-    warning("spending function be either 'OF' or 'Pocock'; set to default")
-    sf <- "Pocock"
-  }
   if(stage == 2) {
-    out <- opt.two(alpha1, alpha2, beta, pc, pt,  sf, show)
+    out <- zhong.two(alpha1, alpha2, beta, pc, pt, sf.param, show, nmax = 100)
   } else {
-    out <- opt.three(alpha1, alpha2, beta, pc, pt, frac_n1, frac_n2, sf, show)
+    if(is.null(sf.param)) sf.param <- 4
+    out <- zhong.three(alpha1, alpha2, beta, pc, pt, frac_n1, frac_n2, sf.param, show, nmax)
   }
-  input <- list(alpha1 = alpha1, alpha2 = alpha2, beta = beta, pc = pc, pt = pt, sf = sf, stage = stage)
+  input <- list(alpha1 = alpha1, alpha2 = alpha2, beta = beta, pc = pc, pt = pt, sf.param = sf.param, stage = stage)
   out <- c(out, input)
   class(out) <- "opt.design"
   return(out)

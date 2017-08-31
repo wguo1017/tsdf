@@ -5,7 +5,7 @@
 \title{Zhong's 2-/3- stage Phase II design}
 \usage{
 opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3),
-  frac_n2 = c(0.2, 0.4), sf = "Pocock", show = FALSE, ...)
+  frac_n2 = c(0.2, 0.4), sf.param = NULL, show = FALSE, nmax = 100, ...)
 }
 \arguments{
 \item{alpha1}{left-side overall type I error.}
@@ -24,9 +24,11 @@ opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3),
 
 \item{frac_n2}{proportion of n2. Used for 3-stage design. default to \code{c(0.2, 0.4)}.}
 
-\item{sf}{the alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.}
+\item{sf.param}{A single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. for two-stage designs, default to \code{NULL}, alpha-spending is not used; for three-stage designs, default to 4.}
 
 \item{show}{logical. If \code{TRUE}, current sample size is shown as total sample size increase.}
+
+\item{nmax}{maximum sample size. default to 100.}
 
 \item{...}{not used argument.}
 }
@@ -35,12 +37,14 @@ An object of class "opt.design" is a list containing:
  \item{bdry}{rejection regions}
  \item{error}{true type 1/2 errors}
  \item{n}{sample size at each stage} 
- \item{alpha1}{input; left-side type 1 error.}
- \item{alpha2}{input; right-side type 1 error.}
+ \item{complete}{complete list of feasible designs}
+ \item{alpha1}{input; left-side type 1 error}
+ \item{alpha2}{input; right-side type 1 error}
+ \item{beta}{input; type 2 error}
  \item{pc}{input; a vector of response rate.}
- \item{pt}{input; a vector of alternative response rate.}
- \item{sf}{input; the alpha-spending function used.}
- \item{stage}{input; two or three stage}
+ \item{pt}{input; a vector of alternative response rate}
+ \item{sf}{input; the alpha-spending function used}
+ \item{stage}{input; two- or three- stage design is used}
 }
 \description{
 calculate optimal 2-/3-stage design given by Bob Zhong

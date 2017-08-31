@@ -1,6 +1,17 @@
+# tsdf 1.1-1
+- changed few internal functions for calculating Phase 2 designs
+- changed the alpha-spending function used in Phase 2 designs
+- changed stopping criterion for Phase 2 designs
+- changed print method for class "opt.design" (more details)
+- fixed bugs when the threshold is an interval (Phase 2 design)
+- added complete feasible designs in the output of opt.design
+- added option : do not use alpha-spending method for two-stage designs so that 
+  the results is consistent with Zhong's paper
+- added option : maximum sample size for Phase 2 designs
+
 # tsdf 1.0-9
 - bug fixes
-- initial release on CRAN
+- initial release on CRAN (fail)
 
 # tsdf 1.0-8
 - changed definition of MTD in "dec.sim"
