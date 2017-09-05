@@ -14,7 +14,7 @@ opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3),
 
 \item{beta}{type II error}
 
-\item{pc}{a numeric vector of response rate. Should be a vector with 1 or 2.}
+\item{pc}{a numeric vector of response rate. should be a vector with length 1 or 2.}
 
 \item{pt}{alternative hypothesis}
 
@@ -24,7 +24,7 @@ opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3),
 
 \item{frac_n2}{proportion of n2. Used for 3-stage design. default to \code{c(0.2, 0.4)}.}
 
-\item{sf.param}{A single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. for two-stage designs, default to \code{NULL}, alpha-spending is not used; for three-stage designs, default to 4.}
+\item{sf.param}{a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. For two-stage designs, default to \code{NULL}(alpha-spending is not used); for three-stage designs, default to 4.}
 
 \item{show}{logical. If \code{TRUE}, current sample size is shown as total sample size increase.}
 
@@ -48,6 +48,9 @@ An object of class "opt.design" is a list containing:
 }
 \description{
 calculate optimal 2-/3-stage design given by Bob Zhong
+}
+\details{
+Alpha-spending method is added to two-/three-stage designs. \code{opt.design} supports Hwang-Shih-DeCani spending function. You may change the definition of \code{my_sfHSD} to change the spending function.
 }
 \examples{
 \dontrun{
