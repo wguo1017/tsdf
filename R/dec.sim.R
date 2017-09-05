@@ -1,5 +1,12 @@
 #' run dose-finding simulations
 #' @description Run dose-finding simulations based on a customized decision table.
+#' @details Denote the number of patients treated by current dose level as m_i and the maximum number of objects treated at each dose level as m_max. The procedure is as follows
+#' \itemize{
+#' \item{Step 1 : }{Denote the dose level being used to treat patients as the current dose level(dose i). Accrue and treat k patients at the current dose level.}
+#' \item{Step 2 : }{Record number of DLTs and use the decision table to make a decision: if decision is ``S" --> step 3; if decision is ``D" or ``DU'' --> step 4; if decision is ``E" --> step 4}
+#' \item{Step 3 : }{If m_i = m_max, declare dose i as the MTD; otherwise, go to step 1. Need to de-escalate dose since the MTD has been exceeded. If current dose is the lowest dose, then stop the trail and declare the MTD is lower than the lowest dose level (inconclusive); If the next-lower level has m_max objects, then stop the trial and declare the MTD is the next lower dose level, otherwise, set the current dose level to be the next-lower dose level and go to step 2; If the decision is ``DU'', never use current dose level again.}
+#' \item{Step 4 : }{Need to escalate dose level. If the current dose level is the highest dose level, then stop the trial and declare that the MTD is higher than the highest dose level (inconclusive); otherwise, set the current dose level to be next dose level and go to step 2.}
+#' }
 #' @param truep a vector of length k (the number of doses being considered in the trial), with values equal to the true probabilities of toxicity at the dose levels.
 #' @param decTable a customized decision table. (same format as output of \code{\link{dec.table}})
 #' @param start.level starting dose level. Defaults to 1, i.e. the lowest dose level.
@@ -18,8 +25,8 @@
 #' @examples
 #' truep <- c(0.3, 0.45, 0.5, 0.6)
 #' res <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
-#' out <- dec.sim(truep, res$table, start.level=2, nsim=1000)
-#' summary(out, pt=0.3)
+#' out <- dec.sim(truep, res$table, start.level = 2, nsim=1000)
+#' summary(out, pt = 0.3)
 
 dec.sim  <- function(truep, decTable, start.level = 1, nsim = 1000) {
   # initialization

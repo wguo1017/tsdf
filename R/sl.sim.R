@@ -5,7 +5,7 @@
 #' @param header A logical value indicating whether the file contains the names of the variables as its first line. Default is \code{FALSE}. See details in \code{\link{read.table}}.
 #' @param sep The field separator character. Default is \code{","}. See details in \code{\link{read.table}}.
 #' @param ... arguments to be passed to \code{\link{read.table}} methods.
-#' @details In each line of the input file, the parameters must be ordered in accordance as follows: \code{pt}, \code{start.level}, \code{nsim}, \code{truep}. See details in \code{\link{read.table}}.
+#' @details In each line of the input file, the parameters must be ordered in accordance as follows: \code{pt}, \code{start.level}, \code{nsim}, \code{truep}. See details in \code{\link{read.table}}. The algorithm for dose-finding is described in \code{\link{dec.sim}}.
 #' @return The function \code{\link{summary}} is used to obtain and print a summary table of the results. An object of class \code{"dec.sim"} (1 scenario) or \code{"sl.sim"} (more than 1 scenarios)is a list containing:
 #'  \item{MTD}{A vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}
 #'  \item{n.patients}{The average number of patients dosed at each level.}

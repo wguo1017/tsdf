@@ -29,7 +29,7 @@ The function \code{\link{summary}} is used to obtain and print a summary table o
 Run dose-finding simulations based on a customized decision table for a list of scenarios.
 }
 \details{
-In each line of the input file, the parameters must be ordered in accordance as follows: \code{pt}, \code{start.level}, \code{nsim}, \code{truep}. See details in \code{\link{read.table}}.
+In each line of the input file, the parameters must be ordered in accordance as follows: \code{pt}, \code{start.level}, \code{nsim}, \code{truep}. See details in \code{\link{read.table}}. The algorithm for dose-finding is described in \code{\link{dec.sim}}.
 }
 \examples{
 dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))

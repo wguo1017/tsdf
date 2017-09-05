@@ -50,18 +50,22 @@ An object of class "opt.design" is a list containing:
 calculate optimal 2-/3-stage design given by Bob Zhong
 }
 \details{
-Alpha-spending method is added to two-/three-stage designs. \code{opt.design} supports Hwang-Shih-DeCani spending function. You may change the definition of \code{my_sfHSD} to change the spending function.
+The two-stage design setup is: n1 patients are treated in the first stage. At the end of the first stage, either the trial continues to the second stage or inefficacy is concluded and the trial is stopped (early termination), depending on the number of responses observed at the first stage. If the trial does continue to the second stage, additional n2 patients are treated. Three-stage design is an extension of two-stage design where one stage is added between Stage 1 and 2. Alpha-spending method is added to two-/three-stage designs. \code{opt.design} supports Hwang-Shih-DeCani spending function. You may change the definition of \code{my_sfHSD} function to use a different spending function. The left-side rejection region is response <= r_i for i = 1, 2, or 3 and right-side rejection region is  response > s.
 }
 \examples{
-\dontrun{
  alpha1 <- 0.15
  alpha2 <- 0.10
  beta <- 0.15
  pc <- 0.25
  pt <- pc + 0.20
- opt.design(alpha1, alpha2, beta, pc, pt, stage=2, show=1)
- opt.design(alpha1, alpha2, beta, pc, pt, stage=3, show=1)
-}
+ # calculate optimal two-stage design without using alpha-spending
+ opt.design(alpha1, alpha2, beta, pc, pt, stage=2)
+ 
+ # calculate optimal two-stage design with Pocock-like spending function 
+ opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, sf.param = 1)
+ 
+ # calculate optimal three-stage design with =O’Brien-Fleming like spending function
+ opt.design(alpha1, alpha2, beta, pc, pt, stage = 3, sf.param = -4)
 }
 \references{
 Zhong. (2012) Single-arm Phase IIA clinical trials with go/no-go decisions. \emph{Contemporary Clinical Trials}, \bold{33}, 1272--1279.

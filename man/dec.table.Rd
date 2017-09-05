@@ -17,7 +17,7 @@ dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf = "Pocock")
 
 \item{pc.u}{a numeric vector of target toxicity which is used to obtain "DU" in the decision table.}
 
-\item{n}{a vector of sample size at each stage. \code{sum(n)} is the total sample size.}
+\item{n}{a vector of sample size at each stage. \code{sum(n)} is the total sample size. For A+B designs, \code{n} is a vector with length 2; for A+B+C designs, \code{n} has length 3.}
 
 \item{sf}{the alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.}
 
@@ -38,15 +38,21 @@ An object of class "dec.table" is a list containing:
 \description{
 Generate three stage dose finding decision table
 }
+\details{
+Alpha-spending method is added to two-/three-stage designs. \code{dec.table} supports two spending functions : \code{Pocock} and \code{OF}. See details in \code{\link{gsDesign}}.
+}
 \examples{
-n <- rep(3, 3)
 alpha.l <- 0.6
 alpha.r <- 0.4
 alpha.u <- 0.3
 pc <- c(0.29, 0.31)
 pc.u <- 0.3
-# print out decision table
+# print out decision table for a 3+3+3 design 
+n <- rep(3, 3)
 dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)$table
+# 3+3 design
+n <- rep(3, 2)
+ dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)$table
 }
 \author{
 Wenchuan Guo <wguo007@ucr.edu>

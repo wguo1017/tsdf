@@ -43,11 +43,15 @@ pc <- 0.25
 # alternative 
 pt <- pc + 0.20
 # 2-stage design
-out <- opt.design(alpha1, alpha2, beta, pc, pt, stage=2)
+out <- opt.design(alpha1, alpha2, beta, pc, pt, stage = 2)
 ```
 `out` is an object of class `opt.design`. S3 method `print` is available for  `opt.design` class. To extract information, run 
 ```{r}
 print(out)
+```
+Alpha-spending method is added to two-/three-stage designs. `opt.design` supports Hwang-Shih-DeCani spending function where `sf.param` specifies the parameter. For two-stage design, the default value is set to be `NULL` which means alpha-spending is not used. For three-stage design, the default is 4. User can change this parameter to set the alpha spent at first 1 or 2 stage. For example, to use a Pocock-like spending function, let `sf.param = 1`, then run
+```{r, eval=FALSE}
+opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, sf.param = 1)
 ```
 
 ## Decision table for Phase I dose-finding

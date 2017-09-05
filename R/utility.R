@@ -5,6 +5,10 @@
 #' @details \code{plot.dec.table} prints the decision boundarys.
 #' @import graphics
 #' @export
+#' @examples
+#' truep <- c(0.3, 0.45, 0.5, 0.6)
+#' out <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+#' plot(out)
 plot.dec.table <- function(x, ...) {
   n <- x$n
   nc <- cumsum(n)
@@ -230,8 +234,6 @@ print.summary.dec.sim <- function(x, ...) {
     cat("\n")
   }
 }
-
-
 
 
 #' print Zhong's design from a "opt.design" object.

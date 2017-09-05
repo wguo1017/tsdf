@@ -1,11 +1,12 @@
 #' generate three-stage dose-finding decision table
 #' @description Generate three stage dose finding decision table
+#' @details  Alpha-spending method is added to two-/three-stage designs. \code{dec.table} supports two spending functions : \code{Pocock} and \code{OF}. See details in \code{\link{gsDesign}}.
 #' @param alpha.l left-side overall type 1 error. Control the upper bound of dose escalation.
 #' @param alpha.r right-side overall type 1 error. Control the lower bound of dose de-escalatition.
 #' @param alpha.u right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for "DU".
 #' @param pc a numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).
 #' @param pc.u a numeric vector of target toxicity which is used to obtain "DU" in the decision table.
-#' @param n a vector of sample size at each stage. \code{sum(n)} is the total sample size.
+#' @param n a vector of sample size at each stage. \code{sum(n)} is the total sample size. For A+B designs, \code{n} is a vector with length 2; for A+B+C designs, \code{n} has length 3.
 #' @param sf the alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.
 #' @param ... not used argument.
 #' @return An object of class "dec.table" is a list containing:
@@ -24,14 +25,17 @@
 #' @import stats
 #' @export
 #' @examples
-#' n <- rep(3, 3)
 #' alpha.l <- 0.6
 #' alpha.r <- 0.4
 #' alpha.u <- 0.3
 #' pc <- c(0.29, 0.31)
 #' pc.u <- 0.3
-#' # print out decision table
+#' # print out decision table for a 3+3+3 design 
+#' n <- rep(3, 3)
 #' dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)$table
+#' # 3+3 design
+#' n <- rep(3, 2)
+#'  dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)$table
 
 dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
   # check
