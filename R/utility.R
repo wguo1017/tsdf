@@ -34,6 +34,8 @@ plot.dec.table <- function(x, ...) {
 #' @param ... Not used argument.
 #' @details \code{print.dec.table} prints the decision table with legend keys.
 #' @export
+#' @examples
+#' print(dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3)))
 print.dec.table <- function(x, ...) {
   print(x$table)
   cat("\n")
@@ -241,6 +243,14 @@ print.summary.dec.sim <- function(x, ...) {
 #' @param x an object of class \code{"opt.design"}, a result of a call to \code{opt.design}.
 #' @param ... not used argument.
 #' @export
+#' @examples
+#' alpha1 <- 0.20
+#' alpha2 <- 0.1
+#' beta <- 0.20
+#' pc <- 0.5
+#' pt <- pc + 0.2
+#' out <- opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, sf.param = 1)
+#' print(out)
 print.opt.design <- function(x, ...) {
   cat("\n Zhong's", x$stage,"stage Phase II design \n\n")
   cat("Minimal response rate: ", unique(x$pc), "\n")

@@ -9,14 +9,20 @@ output:
     highlight: tango
     theme: united
   pdf_document: null
-vignette: |
-  %\VignetteEngine{knitr::knitr} %\VignetteIndexEntry{Quick Start Guide} %\usepackage[UTF-8]{inputenc}
+vignette: >
+  %\VignetteIndexEntry{Quick Start Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
 ---
 
 This guide introduces the basic usage of `tsdf`. For more details, see the documentation for individual functions.
 
 ## Installation
-`tsdf` now is only available on GitHub and we will upload the package to CRAN after we run more tests on the functions. Type the following command in R console :
+Type the following command in R console :
+```{r, eval=FALSE}
+install.packages("tsdf")
+```
+or install the latest version from GitHub
 ```{r, eval=FALSE}
 #check if devtools is installed
 if(!"devtools" %in% rownames(installed.packages())){
