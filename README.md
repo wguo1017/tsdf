@@ -13,3 +13,6 @@ To install latest version from `github` :
 install.packages("devtools")
 devtools::install_github("wguo1990/tsdf")
 ```
+### References
+[1] Bob Zhong, Single-arm phase IIA clinical trials with go/no-go decisions, 2012
+
