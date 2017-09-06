@@ -2,7 +2,7 @@ tsdf
 ===
 
 ### What is it?
-`tsdf` calculates optimal Zhong's two-/three-stage Phase II designs, generates two-/three-stage dose finding decision table and allows user to run simulations using customized decision table.
+`tsdf` calculates optimal Zhong's two-/three-stage Phase II designs, generates two-/three-stage Phase 1 dose finding decision table and allows user to run dose-finding simulations using customized decision table.
 ### Installation
 To install from `CRAN`:
 ```r
