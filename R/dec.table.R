@@ -5,9 +5,8 @@
 #' @param alpha.r right-side overall type 1 error. Control the lower bound of dose de-escalatition.
 #' @param alpha.u right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for "DU".
 #' @param pc a numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).
-#' @param pc.u a numeric vector of target toxicity which is used to obtain "DU" in the decision table.
 #' @param n a vector of sample size at each stage. \code{sum(n)} is the total sample size. For A+B designs, \code{n} is a vector with length 2; for A+B+C designs, \code{n} has length 3.
-#' @param sf the alpha-spending function to be used. \code{sf="OF"} or "\code{sf="Pocock"} uses spending function in R package \code{\link{gsDesign}}; or a user supplied spending function.
+#' @param sf.param  a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. Default to 4.
 #' @param ... not used argument.
 #' @return An object of class "dec.table" is a list containing:
 #'  \item{table}{the generated decision table.}
@@ -17,27 +16,24 @@
 #'  \item{D}{a vector of "D" bound.}
 #'  \item{DU}{a vector of "DU" bound.}
 #'  \item{pc}{input; a vector of target toxicity}
-#'  \item{pc.u}{input; a vector of target toxicity }
 #'  \item{n}{input; a vector with sample size at each stage.}
-#'  \item{sf}{input; the alpha-spending function used.}
+#'  \item{sf.param}{input; the alpha-spending function parameter used.}
 #' @author Wenchuan Guo <wguo007@ucr.edu>
-#' @import gsDesign
 #' @import stats
 #' @export
 #' @examples
 #' alpha.l <- 0.6
 #' alpha.r <- 0.4
-#' alpha.u <- 0.3
-#' pc <- c(0.29, 0.31)
-#' pc.u <- 0.3
+#' alpha.u <- 0.1
+#' pc <- 0.3
 #' # print out decision table for a 3+3+3 design 
 #' n <- rep(3, 3)
-#' dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)$table
+#' dec.table(alpha.l, alpha.r, alpha.u, pc, n)$table
 #' # 3+3 design
 #' n <- rep(3, 2)
-#'  dec.table(alpha.l, alpha.r, alpha.u, pc, pc.u, n)$table
+#' dec.table(alpha.l, alpha.r, alpha.u, pc, n)$table
 
-dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
+dec.table <- function(alpha.l, alpha.r, alpha.u, pc, n, sf.param  = 4) {
   # check
   err <- c(alpha.l, alpha.r, alpha.u)
   k <- length(n)
@@ -50,24 +46,18 @@ dec.table <- function(alpha.l, alpha.r, alpha.u, pc, pc.u, n, sf  = "Pocock") {
   if(length(pc) == 1) {
     pc <- rep(pc, 2)
   }
-  if(length(pc.u) != 1) {
-    stop("'pc.u''s length should be 1 (right-tailed test).")
-  }
   if(k != 3 & k != 2) {
     stop("This function only find two-stage/three-stage optimal design")
   }
-  if(sf != "Pocock" & sf != "OF" & !is.function(sf)){
-    stop("'sf' should be either 'OF', 'Pocock' or a user specified spending function" )
-  }
   if(k == 3) {
-    out.two <- three.opt(alpha.l, alpha.r, pc, n, sf)
-    out.one <- right.three.opt(alpha.u, pc.u, n, sf)
+    out.two <- three.opt(alpha.l, alpha.r, pc, n, sf.param)
+    out.one <- right.three.opt(alpha.u, pc[2], n, sf.param)
   } else {
-    out.two <- two.opt(alpha.l, alpha.r, pc, n, sf)
-    out.one <- right.two.opt(alpha.u, pc.u, n, sf)
+    out.two <- two.opt(alpha.l, alpha.r, pc, n, sf.param)
+    out.one <- right.two.opt(alpha.u, pc[2], n, sf.param)
   }
   
-  des <- list(E = out.two$bdry[1:k], D = out.two$bdry[(k+1):(2*k)], DU = out.one$bdry,  n = n, pc = pc, pc.u = pc.u, sf = sf, alpha.two = out.two$error, alpha.one = out.one$error)
+  des <- list(E = out.two$bdry[1:k], D = out.two$bdry[(k+1):(2*k)], DU = out.one$bdry,  n = n, pc = pc, sf.param = sf.param, alpha.two = out.two$error, alpha.one = out.one$error)
   r <- des$E
   s <- des$D
   su <- des$DU

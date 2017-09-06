@@ -1,15 +1,10 @@
 #' @keywords internal
-three.opt <- function(alpha1, alpha2, pc, n, sf = "Pocock", ...){
+three.opt <- function(alpha1, alpha2, pc, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
-  if(sf == "Pocock" | sf == "OF") {
-    as_left <- cumsum(gsDesign(test.type = 1, alpha = alpha1, timing = nc/nt, sfu = sf)$upper$spend)
-    as_right <- cumsum(gsDesign(test.type = 1, alpha = alpha2, timing = nc/nt, sfu = sf)$upper$spend)
-  } else {
-    as_left <- sf(alpha1, timing = nc/nt)
-    as_right <- sf(alpha2, timing = nc/nt)
-  }
+  as_left <- my_sfHSD(alpha1, nc/nt, sf.param)$spend
+  as_right <- my_sfHSD(alpha2, nc/nt, sf.param)$spend
   # boundary of r1: [0, n1]
   r1_bdry <- 0:nc[1]
   out_r1 <- unique(pbinom(r1_bdry, n[1], pc[1]))
@@ -87,23 +82,18 @@ three.opt <- function(alpha1, alpha2, pc, n, sf = "Pocock", ...){
   # merge results
   names(bdry) <- c("r1", "r2", "r3", "s1", "s2", "s3")
   names(err) <- c("alpha11", "alpha12", "alpha13", "alpha21", "alpha22", "alpha23")
-  out <- list(bdry = bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), sf = sf)
+  out <- list(bdry = bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), sf.param = sf.param)
   class(out) <- "2opt"
   return(out)
 }
 
 #' @keywords internal
-two.opt <- function(alpha1, alpha2, pc, n, sf = "Pocock", ...){
+two.opt <- function(alpha1, alpha2, pc, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[2]
-  if(sf == "Pocock" | sf == "OF") {
-    as_left <- cumsum(gsDesign(k = 2, test.type = 1, alpha = alpha1, timing = nc/nt, sfu = sf)$upper$spend)
-    as_right <- cumsum(gsDesign(k = 2, test.type = 1, alpha = alpha2, timing = nc/nt, sfu = sf)$upper$spend)
-  } else {
-    as_left <- sf(alpha1, timing = nc/nt)
-    as_right <- sf(alpha2, timing = nc/nt)
-  }
+  as_left <- my_sfHSD(alpha1, nc/nt, sf.param)$spend
+  as_right <- my_sfHSD(alpha2, nc/nt, sf.param)$spend
   comb <- NULL
   err <- NULL
   # boundary of r1: [0, n1]
@@ -146,22 +136,17 @@ two.opt <- function(alpha1, alpha2, pc, n, sf = "Pocock", ...){
   # merge results
   names(bdry) <- c("r1", "r2", "s1", "s2")
   names(err) <- c("alpha11", "alpha12", "alpha21", "alpha22")
-  out <- list(bdry= bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), sf = sf)
+  out <- list(bdry= bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), sf.param = sf.param)
   class(out) <- "2opt"
   return(out)
 }
 
 #' @keywords internal
-right.two.opt <- function(alpha, pc, n, sf = "Pocock", ...){
+right.two.opt <- function(alpha, pc, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[2]
-  
-  if(sf == "Pocock" | sf == "OF") {
-    as_right <- cumsum(gsDesign(k = 2, test.type = 1, alpha = alpha, timing = nc/nt, sfu = sf)$upper$spend)
-  } else {
-    as_right <- sf(alpha, timing = nc/nt)
-  }
+  as_right <- my_sfHSD(alpha, nc/nt, sf.param)$spend
   # boundary of s1 (0, n1-1]
   s1_bdry <- 0:(n[1]-1)
   out_s1 <- 1-pbinom(s1_bdry, n[1], pc)
@@ -185,21 +170,17 @@ right.two.opt <- function(alpha, pc, n, sf = "Pocock", ...){
   # merge results
   names(bdry) <- c("s1", "s2")
   names(err) <- c("alpha11", "alpha12")
-  out <- list(bdry = bdry, error = err, pc = pc, n = n, sf = sf, alpha = alpha)
+  out <- list(bdry = bdry, error = err, pc = pc, n = n, sf.param = sf.param, alpha = alpha)
   class(out) <- "1opt"
   return(out)
 }
 
 #' @keywords internal
-right.three.opt <- function(alpha, pc, n, sf = "Pocock", ...){
+right.three.opt <- function(alpha, pc, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
-  if(sf == "Pocock" | sf == "OF") {
-    as_right <- cumsum(gsDesign(test.type = 1, alpha = alpha, timing = nc/nt, sfu = sf)$upper$spend)
-  } else {
-    as_right <- sf(alpha, timing = nc/nt)
-  }
+  as_right <- my_sfHSD(alpha, nc/nt, sf.param)$spend
   # boundary of s1 (0, n1-1]
   s1_bdry <- 0:(n[1]-1)
   out_s1 <- 1-pbinom(s1_bdry, n[1], pc)
@@ -243,7 +224,7 @@ right.three.opt <- function(alpha, pc, n, sf = "Pocock", ...){
   # merge results
   names(bdry) <- c("s1", "s2", "s3")
   names(err) <- c("alpha11", "alpha12", "alpha13")
-  out <- list(bdry = bdry, error = err, pc = pc, n = n, sf = sf, alpha = alpha)
+  out <- list(bdry = bdry, error = err, pc = pc, n = n, sf.param = sf.param, alpha = alpha)
   class(out) <- "1opt"
   return(out)
 }

@@ -18,5 +18,5 @@
 \code{print.dec.table} prints the decision table with legend keys.
 }
 \examples{
-print(dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3)))
+print(dec.table(0.6,0.4,0.2,0.3,c(3,3,3)))
 }

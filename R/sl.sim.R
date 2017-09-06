@@ -18,7 +18,7 @@
 #' @import utils
 #' @export
 #' @examples
-#' dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+#' dt <- dec.table(0.6,0.4,0.2,0.3,c(3,3,3))
 #' test.file <- system.file("extdata", "testS.csv", package = "tsdf")
 #' # use a customized decision table
 #' table.file <- system.file("extdata", "decTable.csv", package = "tsdf")

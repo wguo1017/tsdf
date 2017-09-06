@@ -7,7 +7,7 @@
 #' @export
 #' @examples
 #' truep <- c(0.3, 0.45, 0.5, 0.6)
-#' out <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+#' out <- dec.table(0.6,0.4,0.2,0.3,c(3,3,3))
 #' plot(out)
 plot.dec.table <- function(x, ...) {
   n <- x$n
@@ -35,7 +35,7 @@ plot.dec.table <- function(x, ...) {
 #' @details \code{print.dec.table} prints the decision table with legend keys.
 #' @export
 #' @examples
-#' print(dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3)))
+#' print(dec.table(0.6,0.4,0.2,0.3,c(3,3,3)))
 print.dec.table <- function(x, ...) {
   print(x$table)
   cat("\n")
@@ -62,7 +62,7 @@ print.dec.table <- function(x, ...) {
 #' @export
 #' @examples 
 #' # generate decision table
-#' dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+#' dt <- dec.table(0.6,0.4,0.2,0.3,c(3,3,3))
 #' # simulate trials from test data 
 #' test.file <- system.file("extdata", "testS.csv", package = "tsdf")
 #' out <- sl.sim(dt$table, test.file)
@@ -160,7 +160,7 @@ plot.dec.sim <- function(x, pt, s = 1, type = c("all", "s", "prob", "np", "dlt")
 #' @param ... Not used argument.
 #' @examples 
 #' test.file <- system.file("extdata", "testS.csv", package = "tsdf")
-#' dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+#' dt <- dec.table(0.6,0.4,0.2,0.3,c(3,3,3))
 #' out <- sl.sim(dt$table, test.file)
 #' pt <- c(0.3, 0.4)
 #' summary(out, pt)

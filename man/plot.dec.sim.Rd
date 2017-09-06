@@ -32,7 +32,7 @@ Three plots are currently available: a plot of true toxicity at each dose level 
 }
 \examples{
 # generate decision table
-dt <- dec.table(0.6,0.4,0.2,0.3,0.3,c(3,3,3))
+dt <- dec.table(0.6,0.4,0.2,0.3,c(3,3,3))
 # simulate trials from test data 
 test.file <- system.file("extdata", "testS.csv", package = "tsdf")
 out <- sl.sim(dt$table, test.file)
