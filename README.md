@@ -1,7 +1,7 @@
 tsdf
 ===
 
-[![](http://www.r-pkg.org/badges/version/l0ara)](https://cran.r-project.org/package=l0ara)
+[![](http://www.r-pkg.org/badges/version/tsdf)](https://cran.r-project.org/package=tsdf)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/tsdf)](https://cran.r-project.org/package=tsdf)
 
 ### What is it?
