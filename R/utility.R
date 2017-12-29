@@ -45,6 +45,12 @@ print.dec.table <- function(x, ...) {
   cat("     S : Stay at the same dose", "\n")
   cat("     D : De-escalate to the previous lower dose", "\n")
   cat("    DU : De-escalate and never use this dose again", "\n")
+  cat("\n")
+  cat("Type 1 error : ", "\n")
+  print(x$alpha.two)
+  cat("Type 2 error : ", x$beta,"\n")
+  cat("Right-side type 1 error : ", "\n")
+  print(x$alpha.one)
 }
 
 #' plot simulation results from a dec.sim object
@@ -154,7 +160,7 @@ plot.dec.sim <- function(x, pt, s = 1, type = c("all", "s", "prob", "np", "dlt")
 
 #' Summarizing simulation results from a dec.sim object
 #' @description \code{summary} method for class \code{"dec.sim"}.
-#' @details \code{summary} is used for formating important statistics for dose-finding simulation. Giving the target toxicity, it returns the probability of selecting current dose level as the MTD, probability of selecting the true MTD, probability of subjects treated at or below the true MTD, etc. The MTD is defined as the highest dose level such that the toxicity probability is less than target toxicity probability, if target is less than the smallest probability, then the lowest dose level is set as MTD. For example, if target is 0.3 and true toxicity for five doses are 0.1, 0.25, 0.35, 0.40, then MTD is dose 2.
+#' @details \code{summary} is used for formating important statistics for dose-finding simulation. Giving the target toxicity, it returns the probability of selecting current dose level as the MTD and over the MTD, probability of selecting the true MTD, probability of subjects treated at or below the true MTD, etc. The MTD is defined as the highest dose level such that the toxicity probability is less than target toxicity probability, if target is less than the smallest probability, then the lowest dose level is set as MTD. For example, if target is 0.3 and true toxicity for five doses are 0.1, 0.25, 0.35, 0.40, then MTD is dose 2.
 #' @param object an object of class \code{"dec.sim"}, a result of a call to \code{dec.sim} or \code{sl.sim}.
 #' @param pt target toxicity for each scenario.
 #' @param ... Not used argument.
@@ -168,7 +174,7 @@ plot.dec.sim <- function(x, pt, s = 1, type = c("all", "s", "prob", "np", "dlt")
 #' @export
 summary.dec.sim <- function(object, pt, ...) {
   if(missing(pt)) {
-    stop("Missing true toxicity.")
+    warning("Missing true toxicity")
   }
   if(class(object)[1] == "sl.sim" & length(object) != length(pt)) {
     warning("pt length not equal to number of scenarios; only returns the first scenario stats")
@@ -186,15 +192,16 @@ summary.dec.sim <- function(object, pt, ...) {
     }
     truep <- ans$truep
     n_dose <- length(truep)
-    res <- matrix(0, n_dose, 5)
-    colnames(res) <- c("Level", "Truth", "MTD", "DLT", "NP")
+    res <- matrix(0, n_dose, 6)
+    colnames(res) <- c("Level", "Truth", "MTD", "Over","DLT", "NP")
     res[, 1] <- 1:n_dose 
     res[, 2] <- truep
     res[, 3] <- ans$mtd.prob[1:n_dose]
-    res[, 4] <- ans$dlt
-    res[, 5] <- ans$n.patients
+    res[, 4] <- ans$over.prob[1:n_dose]
+    res[, 5] <- ans$dlt
+    res[, 6] <- ans$n.patients
     # calculate stats
-    avg.np[i] <- sum(res[, 5])
+    avg.np[i] <- sum(res[, 6])
     if(max(truep) < pt[i]) {
       mtd.dose <- "higher than highest dose"
       avg.dose[i] <- ans$mtd.prob[n_dose+2]
@@ -206,7 +213,7 @@ summary.dec.sim <- function(object, pt, ...) {
     } else {
       mtd.dose <- max(which(truep <= pt[i]))
       avg.dose[i] <- res[, 3][mtd.dose]
-      avg.prob[i] <-sum(res[, 5][truep <= pt[i]])/sum(res[, 5])
+      avg.prob[i] <-sum(res[, 6][truep <= pt[i]])/sum(res[, 6])
     }
     out[[i]] <- list(dose.stats = res, prob.select = avg.dose[i], at.below.mtd = avg.prob[i], mtd = mtd.dose, nsim = ans$nsim, pt = pt[i], avg.np = avg.np[i], start.level = ans$start.level)
   }
@@ -219,9 +226,10 @@ print.summary.dec.sim <- function(x, ...) {
   cat("What does each column represent ?", "\n\n")
   cat("Level : Dose level", "\n")
   cat("Truth : True toxicity probability", "\n")
-  cat("MTD : The probability of selecting current dose level as the MTD", "\n")
-  cat("DLT : The average number of subjects experienced DLT at current dose level", "\n")
-  cat("NP : The average number of subjects treated at current dose level", "\n\n")
+  cat("MTD   : The probability of selecting current dose level as the MTD", "\n")
+  cat("Over  : The probability of selecting current dose level as over the MTD", "\n")
+  cat("DLT   : The average number of subjects experienced DLT at current dose level", "\n")
+  cat("NP    : The average number of subjects treated at current dose level", "\n\n")
   
   for(i in 1:length(x)){
     # table legends
@@ -232,7 +240,7 @@ print.summary.dec.sim <- function(x, ...) {
     cat("Average number of subjects =", x[[i]]$avg.np, "\n")
     cat("Probability of selecting the true MTD =", x[[i]]$prob.select, "\n")
     cat("Probability of subjects treated at or below the true MTD =", x[[i]]$at.below.mtd, "\n\n")
-    print(as.data.frame(x[[i]]$dose.stats ))
+    print(as.data.frame(x[[i]]$dose.stats))
     cat("\n")
   }
 }
@@ -268,7 +276,3 @@ print.opt.design <- function(x, ...) {
   print(x$error)
   cat("\n")
 }
-
-
-
-
