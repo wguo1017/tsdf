@@ -4,7 +4,7 @@
 \alias{dec.table}
 \title{generate three-stage dose-finding decision table}
 \usage{
-dec.table(alpha.l, alpha.r, alpha.u, pc, n, sf.param = 4)
+dec.table(alpha.l, alpha.r, alpha.u, pc, n, sf.param = 4, pe.par = 0.25)
 }
 \arguments{
 \item{alpha.l}{left-side overall type 1 error. Control the upper bound of dose escalation.}
@@ -19,12 +19,16 @@ dec.table(alpha.l, alpha.r, alpha.u, pc, n, sf.param = 4)
 
 \item{sf.param}{a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. Default to 4.}
 
+\item{pe.par}{alternative hypothesis that used to calculate power/type 2 error. The alternative is set to be \code{pe = pt + pe.par}. Default to 0.25.}
+
 \item{...}{not used argument.}
 }
 \value{
 An object of class "dec.table" is a list containing:
  \item{table}{the generated decision table.}
  \item{alpha.two}{a vector of true type 1 error for two-tailed test.}
+ \item{alpha.one}{a vector of true type 1 error for right-tailed test.}
+ \item{beta}{a single value of true type 2 error(depends on alternative).}
  \item{E}{a vector of "E" bound.}
  \item{D}{a vector of "D" bound.}
  \item{DU}{a vector of "DU" bound.}

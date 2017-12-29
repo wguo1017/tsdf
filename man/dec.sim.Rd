@@ -18,9 +18,10 @@ dec.sim(truep, decTable, start.level = 1, nsim = 1000)
 \value{
 the functions \code{\link{summary.dec.sim}} is used to obtain and print a summary table of the results (recommended). An object of class \code{"dec.sim"} is a list containing:
  \item{mtd}{a vector of dose levels giving the recommended maximum tolerated dose (MTD) at the end of the trial.}
- \item{mtd.prob}{a vector of length \code{k} giving the average proportions of selected as MTD at each dose level}
+ \item{mtd.prob}{a vector of length \code{k} giving the average proportions of selected as MTD at each dose level.}
+ \item{over.prob}{a vector of length \code{k} giving the average proportions of selected as over the MTD at each dose level.}
  \item{n.patients}{the average number of patients dosed at each level.}
- \item{dlt}{the average number of DLTs experienced at each dose level}
+ \item{dlt}{the average number of DLTs experienced at each dose level.}
  \item{truep}{input; true probabilities of toxicity.}
  \item{start.level}{input; starting dose level.}
  \item{nsim}{input; number of simulated trails.}
@@ -29,12 +30,12 @@ the functions \code{\link{summary.dec.sim}} is used to obtain and print a summar
 Run dose-finding simulations based on a customized decision table.
 }
 \details{
-Denote the number of patients treated by current dose level as m_i and the maximum number of objects treated at each dose level as m_max. The procedure is as follows
+Assume there are $d$ dose levels to be studied. Denote the cumulative number of patients treated and cumulative number of DLTs at the current dose level are $n_i$ and $m_i$, respectively. $n_{max}$ is the maximum number of patients permitted to be treated at each dose level. The procedure is as follows
 \itemize{
-\item{Step 1 : }{Denote the dose level being used to treat patients as the current dose level(dose i). Accrue and treat k patients at the current dose level.}
-\item{Step 2 : }{Record number of DLTs and use the decision table to make a decision: if decision is ``S" --> step 3; if decision is ``D" or ``DU'' --> step 4; if decision is ``E" --> step 4}
-\item{Step 3 : }{If m_i = m_max, declare dose i as the MTD; otherwise, go to step 1. Need to de-escalate dose since the MTD has been exceeded. If current dose is the lowest dose, then stop the trail and declare the MTD is lower than the lowest dose level (inconclusive); If the next-lower level has m_max objects, then stop the trial and declare the MTD is the next lower dose level, otherwise, set the current dose level to be the next-lower dose level and go to step 2; If the decision is ``DU'', never use current dose level again.}
-\item{Step 4 : }{Need to escalate dose level. If the current dose level is the highest dose level, then stop the trial and declare that the MTD is higher than the highest dose level (inconclusive); otherwise, set the current dose level to be next dose level and go to step 2.}
+\item{Step 1 : }{Update cumulative number of DLTs $m_i$ and total number of patients $n_i$ treated at the current dose and use the decision table to make a decision: if decision is ``S" --> step 2; if decision is ``D" or ``DU'' --> step 3; if decision is ``E'' --> step 4}
+\item{Step 2 : }{If $n_i = n_{max}$, declare dose i as the MTD; otherwise, update $m_i$ and $n_i$ with additional cohort of patients and go to Step 1.}
+\item{Step 3 : }{If the current dose level is the highest dose level, then: if n_i < n_max, update $m_i$ and $n_i$ with additional cohort of patients and go to Step 1; otherwise, stop the trial and declare that the MTD is higher than the highest dose level (inconclusive); If the current dose is not the lowest dose, then: if $n_{i-1} < n_{max}$, update $m_{i-1}$ and $n_{i-1}$ with additional cohort of patients and set the current dose level to be the next lower dose level, and go to Step 1; otherwise, stop the trial and declare the next lower dose level is the MTD; Additionally, if the decision is ``DU'', record this dose level as DU and never treat additional patients at the current dose level again.}
+\item{Step 4 : }{If the current dose level is the highest dose level, then: if $n_i < n_{max}$, update $m_i$ and $n_i$ with additional cohort of patients and go to Step 1; otherwise, stop the trial and declare that the MTD is higher than the highest dose level (inconclusive); If the next higher dose level is of status DU, then: if $n_i < n_{max}$, update $m_i$ and $n_i$ with additional cohort of patients and go to step 1; otherwise stop, the current dose level is MTD; Otherwise: if $n_{i+1} < n_{max}$, update $m_{i+1}$ and  $n_{i+1}$ with additional cohort of patients, set the current dose level to be next higher dose level, and go to step 1; else, the current dose level is the MTD. }
 }
 }
 \examples{

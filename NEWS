@@ -1,6 +1,11 @@
+# tsdf 1.1-4
+- "dec.sim" now reports the probability of selected as over the MTD at each dose level
+- changed dose-finding simulation algorithm (more accurate MTD when the decision is "E")
+- added option "pe.par" in dec.table function to calculate true type 2 error
+
 # tsdf 1.1-3
-- removed option pc.u in dec.table function 
 - dec.table now supports HSD spending function 
+- removed option pc.u in dec.table function 
 - removed sf option in dec.table function
 - added sf.param option in dec.table function (more flexible)
 - updated vignettes
@@ -10,7 +15,7 @@
 - initial release on CRAN
 
 # tsdf 1.1-1
-- changed few internal functions for calculating Phase 2 designs
+- changed internal functions for calculating Phase 2 designs
 - changed the alpha-spending function used in Phase 2 designs
 - changed stopping criterion for Phase 2 designs
 - changed print method for class "opt.design" (more details)
