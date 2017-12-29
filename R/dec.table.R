@@ -7,11 +7,13 @@
 #' @param pc a numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).
 #' @param n a vector of sample size at each stage. \code{sum(n)} is the total sample size. For A+B designs, \code{n} is a vector with length 2; for A+B+C designs, \code{n} has length 3.
 #' @param sf.param  a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. Default to 4.
+#' @param pe.par alternative hypothesis that used to calculate power/type 2 error. The alternative is set to be \code{pe = pt + pe.par}. Default to 0.25.
 #' @param ... not used argument.
 #' @return An object of class "dec.table" is a list containing:
 #'  \item{table}{the generated decision table.}
 #'  \item{alpha.two}{a vector of true type 1 error for two-tailed test.}
-#   \item{alpha.one}{a vector of true type 1 error for right-tailed test.}
+#'  \item{alpha.one}{a vector of true type 1 error for right-tailed test.}
+#'  \item{beta}{a single value of true type 2 error(depends on alternative).}
 #'  \item{E}{a vector of "E" bound.}
 #'  \item{D}{a vector of "D" bound.}
 #'  \item{DU}{a vector of "DU" bound.}
@@ -33,7 +35,7 @@
 #' n <- rep(3, 2)
 #' dec.table(alpha.l, alpha.r, alpha.u, pc, n)$table
 
-dec.table <- function(alpha.l, alpha.r, alpha.u, pc, n, sf.param  = 4) {
+dec.table <- function(alpha.l, alpha.r, alpha.u, pc, n, sf.param  = 4, pe.par = 0.25) {
   # check
   err <- c(alpha.l, alpha.r, alpha.u)
   k <- length(n)
@@ -50,14 +52,13 @@ dec.table <- function(alpha.l, alpha.r, alpha.u, pc, n, sf.param  = 4) {
     stop("This function only find two-stage/three-stage optimal design")
   }
   if(k == 3) {
-    out.two <- three.opt(alpha.l, alpha.r, pc, n, sf.param)
+    out.two <- three.opt(alpha.l, alpha.r, pc, n, sf.param, pe.par)
     out.one <- right.three.opt(alpha.u, pc[2], n, sf.param)
   } else {
-    out.two <- two.opt(alpha.l, alpha.r, pc, n, sf.param)
+    out.two <- two.opt(alpha.l, alpha.r, pc, n, sf.param, pe.par)
     out.one <- right.two.opt(alpha.u, pc[2], n, sf.param)
   }
-  
-  des <- list(E = out.two$bdry[1:k], D = out.two$bdry[(k+1):(2*k)], DU = out.one$bdry,  n = n, pc = pc, sf.param = sf.param, alpha.two = out.two$error, alpha.one = out.one$error)
+  des <- list(E = out.two$bdry[1:k], D = out.two$bdry[(k+1):(2*k)], DU = out.one$bdry,  n = n, pc = pc, sf.param = sf.param, alpha.two = out.two$error, alpha.one = out.one$error, beta = out.two$beta)
   r <- des$E
   s <- des$D
   su <- des$DU
