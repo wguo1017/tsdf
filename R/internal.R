@@ -1,5 +1,5 @@
 #' @keywords internal
-three.opt <- function(alpha1, alpha2, pc, n, sf.param, ...){
+three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
@@ -79,16 +79,21 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, ...){
   # save feasible designs & errors
   bdry <- c(r1, r2, r3, s1, s2, s3)
   err <- c(out_r1, out_r2, out_r3, out_s1, out_s2, out_s3)
+  pe <- pc[2] + pe.par
+  emp_power <- 1 - pbinom(s1, n[1], pe) + sum(dbinom(t1, n[1], pe) * (1-pbinom(s2-t1, n[2], pe))) + sapply(t1, function(tt){
+    t2 <- (r2-tt+1):(s2-tt)
+    return(dbinom(tt, n[1], pe) * sum(dbinom(t2, n[2], pe) * (1-pbinom(s3-tt-t2, n[3], pe))))
+  })
   # merge results
   names(bdry) <- c("r1", "r2", "r3", "s1", "s2", "s3")
   names(err) <- c("alpha11", "alpha12", "alpha13", "alpha21", "alpha22", "alpha23")
-  out <- list(bdry = bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), sf.param = sf.param)
+  out <- list(bdry = bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), beta = 1 - emp_power, sf.param = sf.param)
   class(out) <- "2opt"
   return(out)
 }
 
 #' @keywords internal
-two.opt <- function(alpha1, alpha2, pc, n, sf.param, ...){
+two.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[2]
@@ -132,11 +137,14 @@ two.opt <- function(alpha1, alpha2, pc, n, sf.param, ...){
   s2 <- s2_bdry[min(ind_s2)]
   out_s2 <- out_s2[min(ind_s2)]
   bdry <- c(r1, r2, s1, s2)
+  # calculate type-2 error with pt = pc + 0.2
+  pe <- pc[2] + pe.par
   err <- c(out_r1, out_r2, out_s1, out_s2)
+  emp_power <- 1 - pbinom(s1, n[1], pe) + sum(dbinom(t1, n[1], pe) * (1-pbinom(s2-t1, n[2], pe)))
   # merge results
   names(bdry) <- c("r1", "r2", "s1", "s2")
   names(err) <- c("alpha11", "alpha12", "alpha21", "alpha22")
-  out <- list(bdry= bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), sf.param = sf.param)
+  out <- list(bdry= bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), beta = 1 - emp_power, sf.param = sf.param)
   class(out) <- "2opt"
   return(out)
 }
