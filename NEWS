@@ -1,6 +1,8 @@
 # tsdf 1.1-4
 - "dec.sim" now reports the probability of selected as over the MTD at each dose level
 - changed dose-finding simulation algorithm (more accurate MTD when the decision is "E")
+- changed parameters in Phase I dose-finding (pc --> pt)
+- Phase I designs now called Target Toxicity Design.
 - added option "pe.par" in dec.table function to calculate true type 2 error
 
 # tsdf 1.1-3

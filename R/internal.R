@@ -1,5 +1,5 @@
 #' @keywords internal
-three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
+three.opt <- function(alpha1, alpha2, pt, n, sf.param, pe.par, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
@@ -7,7 +7,7 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   as_right <- my_sfHSD(alpha2, nc/nt, sf.param)$spend
   # boundary of r1: [0, n1]
   r1_bdry <- 0:nc[1]
-  out_r1 <- unique(pbinom(r1_bdry, n[1], pc[1]))
+  out_r1 <- unique(pbinom(r1_bdry, n[1], pt[1]))
   ind_r1 <- which(out_r1 <= as_left[1])
   # check if conditions hold
   if(length(ind_r1)==0) stop("No optimal design (left side)")
@@ -15,7 +15,7 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   out_r1 <- out_r1[max(ind_r1)]
   # boundary of s1 (r1, n1-1]
   s1_bdry <- r1:(n[1]-1)
-  out_s1 <- unique(1 - pbinom(s1_bdry, n[1], pc[2]))
+  out_s1 <- unique(1 - pbinom(s1_bdry, n[1], pt[2]))
   ind_s1 <- which(out_s1 <= as_right[1])
   # check if condition holds 
   if(length(ind_s1) == 0) stop("No optimal design (right side)")
@@ -24,7 +24,7 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   # boundary of r1: [r1, n1+n2-1]
   r2_bdry <- r1:(nc[2]-1)
   t1 <- (r1+1):s1
-  out_r2 <- sapply(r2_bdry, function(r2) sum(dbinom(t1, n[1], pc[1]) * pbinom(r2-t1, n[2], pc[1]))) + out_r1
+  out_r2 <- sapply(r2_bdry, function(r2) sum(dbinom(t1, n[1], pt[1]) * pbinom(r2-t1, n[2], pt[1]))) + out_r1
   out_r2 <- unique(out_r2)
   ind_r2 <- which(out_r2 <= as_left[2])
   # check if conditions hold
@@ -33,7 +33,7 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   out_r2 <- out_r2[max(ind_r2)]
   # boundary of s2
   s2_bdry <- r2:nc[2]
-  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pc[2]) * (1-pbinom(s2-t1, n[2], pc[2])))) + out_s1
+  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pt[2]) * (1-pbinom(s2-t1, n[2], pt[2])))) + out_s1
   out_s2 <- unique(out_s2)
   ind_s2 <- which(out_s2 <= as_right[2])
   # check if conditions hold
@@ -44,7 +44,7 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   r3_bdry <- r2:nc[3]
   out_r3 <- sapply(t1, function(tt){
     t2 <- (r2-tt+1):(s2-tt)
-    return(sapply(r3_bdry, function(r3) dbinom(tt, n[1], pc[1]) * sum(dbinom(t2, n[2], pc[1]) * pbinom(r3-tt-t2, n[3], pc[1]))))
+    return(sapply(r3_bdry, function(r3) dbinom(tt, n[1], pt[1]) * sum(dbinom(t2, n[2], pt[1]) * pbinom(r3-tt-t2, n[3], pt[1]))))
   })
   # check if nrow(out_r3)==1
   if(is.vector(out_r3)) {
@@ -62,7 +62,7 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   s3_bdry <- r3:(nc[3]-1)
   out_s3 <- sapply(t1, function(tt){
     t2 <- (r2-tt+1):(s2-tt)
-    return(sapply(s3_bdry, function(s3) dbinom(tt, n[1], pc[2]) * sum(dbinom(t2, n[2], pc[2]) * (1-pbinom(s3-tt-t2, n[3], pc[2])))))
+    return(sapply(s3_bdry, function(s3) dbinom(tt, n[1], pt[2]) * sum(dbinom(t2, n[2], pt[2]) * (1-pbinom(s3-tt-t2, n[3], pt[2])))))
   })
   # check if nrow(out_s3)==1
   if(is.vector(out_s3)) {
@@ -79,7 +79,7 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   # save feasible designs & errors
   bdry <- c(r1, r2, r3, s1, s2, s3)
   err <- c(out_r1, out_r2, out_r3, out_s1, out_s2, out_s3)
-  pe <- pc[2] + pe.par
+  pe <- pt[2] + pe.par
   emp_power <- 1 - pbinom(s1, n[1], pe) + sum(dbinom(t1, n[1], pe) * (1-pbinom(s2-t1, n[2], pe))) + sapply(t1, function(tt){
     t2 <- (r2-tt+1):(s2-tt)
     return(dbinom(tt, n[1], pe) * sum(dbinom(t2, n[2], pe) * (1-pbinom(s3-tt-t2, n[3], pe))))
@@ -87,13 +87,13 @@ three.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   # merge results
   names(bdry) <- c("r1", "r2", "r3", "s1", "s2", "s3")
   names(err) <- c("alpha11", "alpha12", "alpha13", "alpha21", "alpha22", "alpha23")
-  out <- list(bdry = bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), beta = 1 - emp_power, sf.param = sf.param)
+  out <- list(bdry = bdry, error = err, pt = pt, n = n, alpha = c(alpha1, alpha2), beta = 1 - emp_power, sf.param = sf.param)
   class(out) <- "2opt"
   return(out)
 }
 
 #' @keywords internal
-two.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
+two.opt <- function(alpha1, alpha2, pt, n, sf.param, pe.par, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[2]
@@ -103,7 +103,7 @@ two.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   err <- NULL
   # boundary of r1: [0, n1]
   r1_bdry <- 0:nc[1]
-  out_r1 <- unique(pbinom(r1_bdry, n[1], pc[1]))
+  out_r1 <- unique(pbinom(r1_bdry, n[1], pt[1]))
   ind_r1 <- which(out_r1 <= as_left[1])
   # check if conditions hold
   if(length(ind_r1)==0) stop("No optimal design (left side)")
@@ -111,7 +111,7 @@ two.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   out_r1 <- out_r1[max(ind_r1)]
   # boundary of s1 (r1, n1-1]
   s1_bdry <- r1:(n[1]-1)
-  out_s1 <- unique(1 - pbinom(s1_bdry, n[1], pc[2]))
+  out_s1 <- unique(1 - pbinom(s1_bdry, n[1], pt[2]))
   ind_s1 <- which(out_s1 <= as_right[1])
   # check if condition holds 
   if(length(ind_s1) == 0) stop("No optimal design (right side)")
@@ -120,7 +120,7 @@ two.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   # boundary of r1: [r1, n1+n2-1]
   r2_bdry <- r1:(nc[2]-1)
   t1 <- (r1+1):s1
-  out_r2 <- sapply(r2_bdry, function(r2) sum(dbinom(t1, n[1], pc[1]) * pbinom(r2-t1, n[2], pc[1]))) + out_r1
+  out_r2 <- sapply(r2_bdry, function(r2) sum(dbinom(t1, n[1], pt[1]) * pbinom(r2-t1, n[2], pt[1]))) + out_r1
   out_r2 <- unique(out_r2)
   ind_r2 <- which(out_r2 <= as_left[2])
   # check if conditions hold
@@ -129,7 +129,7 @@ two.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   out_r2 <- out_r2[max(ind_r2)]
   # boundary of s2
   s2_bdry <- r2:nc[2]
-  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pc[2]) * (1-pbinom(s2-t1, n[2], pc[2])))) + out_s1
+  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pt[2]) * (1-pbinom(s2-t1, n[2], pt[2])))) + out_s1
   out_s2 <- unique(out_s2)
   ind_s2 <- which(out_s2 <= as_right[2])
   # check if conditions hold
@@ -137,27 +137,27 @@ two.opt <- function(alpha1, alpha2, pc, n, sf.param, pe.par, ...){
   s2 <- s2_bdry[min(ind_s2)]
   out_s2 <- out_s2[min(ind_s2)]
   bdry <- c(r1, r2, s1, s2)
-  # calculate type-2 error with pt = pc + 0.2
-  pe <- pc[2] + pe.par
+  # calculate type-2 error with pt = pt + 0.2
+  pe <- pt[2] + pe.par
   err <- c(out_r1, out_r2, out_s1, out_s2)
   emp_power <- 1 - pbinom(s1, n[1], pe) + sum(dbinom(t1, n[1], pe) * (1-pbinom(s2-t1, n[2], pe)))
   # merge results
   names(bdry) <- c("r1", "r2", "s1", "s2")
   names(err) <- c("alpha11", "alpha12", "alpha21", "alpha22")
-  out <- list(bdry= bdry, error = err, pc = pc, n = n, alpha = c(alpha1, alpha2), beta = 1 - emp_power, sf.param = sf.param)
+  out <- list(bdry= bdry, error = err, pt = pt, n = n, alpha = c(alpha1, alpha2), beta = 1 - emp_power, sf.param = sf.param)
   class(out) <- "2opt"
   return(out)
 }
 
 #' @keywords internal
-right.two.opt <- function(alpha, pc, n, sf.param, ...){
+right.two.opt <- function(alpha, pt, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[2]
   as_right <- my_sfHSD(alpha, nc/nt, sf.param)$spend
   # boundary of s1 (0, n1-1]
   s1_bdry <- 0:(n[1]-1)
-  out_s1 <- 1-pbinom(s1_bdry, n[1], pc)
+  out_s1 <- 1-pbinom(s1_bdry, n[1], pt)
   ind_s1 <- which(out_s1 <= as_right[1])
   # check if condition holds 
   if(length(ind_s1)==0) stop("No optimal design (right side)")
@@ -166,7 +166,7 @@ right.two.opt <- function(alpha, pc, n, sf.param, ...){
   t1 <- 0:s1
   # boundary of s2
   s2_bdry <- s1:(nc[2]-1)
-  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pc) * (1 - pbinom(s2-t1, n[2], pc)))) + out_s1
+  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pt) * (1 - pbinom(s2-t1, n[2], pt)))) + out_s1
   out_s2 <- unique(out_s2)
   ind_s2 <- which(out_s2 <= as_right[2])
   # check if conditions hold
@@ -178,20 +178,20 @@ right.two.opt <- function(alpha, pc, n, sf.param, ...){
   # merge results
   names(bdry) <- c("s1", "s2")
   names(err) <- c("alpha11", "alpha12")
-  out <- list(bdry = bdry, error = err, pc = pc, n = n, sf.param = sf.param, alpha = alpha)
+  out <- list(bdry = bdry, error = err, pt = pt, n = n, sf.param = sf.param, alpha = alpha)
   class(out) <- "1opt"
   return(out)
 }
 
 #' @keywords internal
-right.three.opt <- function(alpha, pc, n, sf.param, ...){
+right.three.opt <- function(alpha, pt, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
   as_right <- my_sfHSD(alpha, nc/nt, sf.param)$spend
   # boundary of s1 (0, n1-1]
   s1_bdry <- 0:(n[1]-1)
-  out_s1 <- 1-pbinom(s1_bdry, n[1], pc)
+  out_s1 <- 1-pbinom(s1_bdry, n[1], pt)
   ind_s1 <- which(out_s1 <= as_right[1])
   # check if condition holds 
   if(length(ind_s1)==0) stop("No optimal design (right side)")
@@ -201,7 +201,7 @@ right.three.opt <- function(alpha, pc, n, sf.param, ...){
   t1 <- 0:s1
   # boundary of s2
   s2_bdry <- s1:(nc[2]-1)
-  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pc) * (1 - pbinom(s2-t1, n[2], pc)))) + out_s1
+  out_s2 <- sapply(s2_bdry, function(s2) sum(dbinom(t1, n[1], pt) * (1 - pbinom(s2-t1, n[2], pt)))) + out_s1
   out_s2 <- unique(out_s2)
   ind_s2 <- which(out_s2 <= as_right[2])
   # check if conditions hold
@@ -212,7 +212,7 @@ right.three.opt <- function(alpha, pc, n, sf.param, ...){
   s3_bdry <- s2:(nc[3]-1)
   out_s3 <- sapply(t1, function(tt){
     t2 <- 0:(s2-tt)
-    return(sapply(s3_bdry, function(s3) dbinom(tt, n[1], pc)  *sum(dbinom(t2, n[2], pc)*(1 - pbinom(s3-tt-t2, n[3], pc)))))
+    return(sapply(s3_bdry, function(s3) dbinom(tt, n[1], pt)  *sum(dbinom(t2, n[2], pt)*(1 - pbinom(s3-tt-t2, n[3], pt)))))
   })
   # check if nrow(out_s3)==1
   if(is.vector(out_s3)) {
@@ -232,7 +232,7 @@ right.three.opt <- function(alpha, pc, n, sf.param, ...){
   # merge results
   names(bdry) <- c("s1", "s2", "s3")
   names(err) <- c("alpha11", "alpha12", "alpha13")
-  out <- list(bdry = bdry, error = err, pc = pc, n = n, sf.param = sf.param, alpha = alpha)
+  out <- list(bdry = bdry, error = err, pt = pt, n = n, sf.param = sf.param, alpha = alpha)
   class(out) <- "1opt"
   return(out)
 }

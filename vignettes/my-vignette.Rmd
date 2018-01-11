@@ -61,7 +61,7 @@ opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, sf.param = 1)
 ```
 
 ## Decision table for Phase I dose-finding
-`dec.table` function is used to generate decision table for a three-stage dose-finding design. `alpha.l` (left side), `alpha.r` (right side), `alpha.u` (right side type I error for "DU", usually less than `alpha.r`) are three type I errors control the boundary of decisions. `pc` is the target toxicity level. `pc` is either a single or an interval value. This is also a group sequential design, so alpha-spending method is added. The `sf.param` option is same as in `opt.design`. The default value is set to be 4. We call `dec.table` function as follows 
+`dec.table` function is used to generate decision table for a three-stage dose-finding design. `alpha.l` (left side), `alpha.r` (right side), `alpha.u` (right side type I error for "DU", usually less than `alpha.r`) are three type I errors control the boundary of decisions. `pt` is the target toxicity level. `pt` is either a single or an interval value. This is also a group sequential design, so alpha-spending method is added. The `sf.param` option is same as in `opt.design`. The default value is set to be 4. We call `dec.table` function as follows 
 ```{r}
 # sample size 
 n <- rep(3, 3)
@@ -70,9 +70,9 @@ alpha.l <- 0.6
 alpha.r <- 0.4
 alpha.u <- 0.2
 # target toxicity 
-pc <- 0.3
+pt <- 0.3
 # call dec.table
-out <- dec.table(alpha.l, alpha.r, alpha.u, pc, n)
+out <- dec.table(alpha.l, alpha.r, alpha.u, pt, n)
 ```
 `out` is an object of class `dec.table` that contains all the relevant information including decision table, real type errors and input parameter. However, we do not recommend users to extract the components from this object directly. `plot` and `print` S3 method are available for `dec.table` class. 
 
