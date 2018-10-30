@@ -4,8 +4,9 @@
 \alias{opt.design}
 \title{Zhong's 2-/3- stage Phase II design}
 \usage{
-opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3),
-  frac_n2 = c(0.2, 0.4), sf.param = NULL, show = FALSE, nmax = 100, ...)
+opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, two.sided = FALSE,
+  frac_n1 = c(0.2, 0.3), frac_n2 = c(0.2, 0.4), sf.param = NULL,
+  show = FALSE, nmax = 100, n.ratio = 1/2, ...)
 }
 \arguments{
 \item{alpha1}{left-side overall type I error.}
@@ -20,15 +21,19 @@ opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3),
 
 \item{stage}{2 or 3. default to 2 (2-stage design).}
 
+\item{two.sided}{logical flag. default to \code{FALSE}. if \code{two.sided = TRUE}, the trial may stop for superiority before the last stage.}
+
 \item{frac_n1}{proportion of n1. Used for 3-stage design. default to \code{c(0.2, 0.3)}, i.e. the range of \code{n1} is \code{0.2*n} to \code{0.3*n}}
 
 \item{frac_n2}{proportion of n2. Used for 3-stage design. default to \code{c(0.2, 0.4)}.}
 
-\item{sf.param}{a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. For two-stage designs, default to \code{NULL}(alpha-spending is not used); for three-stage designs, default to 4.}
+\item{sf.param}{a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Increasing this parameter implies that more error is spent early stage and less is available in late stage. For two-stage designs, default to \code{NULL}(alpha-spending is not used); for three-stage designs, default to 4.}
 
 \item{show}{logical. If \code{TRUE}, current sample size is shown as total sample size increase.}
 
 \item{nmax}{maximum sample size. default to 100.}
+
+\item{n.ratio}{stop criterion for the search of two stage designs. stop if the number of feasible designsis more than \code{n.ratio} times total sample size.}
 
 \item{...}{not used argument.}
 }

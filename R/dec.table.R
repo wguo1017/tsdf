@@ -1,12 +1,12 @@
 #' generate three-stage dose-finding decision table
 #' @description Generate three stage dose finding decision table
-#' @details  Alpha-spending method is added to two-/three-stage designs. \code{dec.table} supports two spending functions : \code{Pocock} and \code{OF}. See details in \code{\link{gsDesign}}.
+#' @details  Alpha-spending method is added to two-/three-stage designs. \code{dec.table} supports Hwang-Shih-DeCani spending function. 
 #' @param alpha.l left-side overall type 1 error. Control the upper bound of dose escalation.
 #' @param alpha.r right-side overall type 1 error. Control the lower bound of dose de-escalatition.
 #' @param alpha.u right-side overall type 1 error. This also controls the lower bound of dose de-escalatition, but it is used to find lower bound for "DU".
 #' @param pt a numeric vector of target toxicity. Should be a vector with 1 or 2(when the target is an interval).
 #' @param n a vector of sample size at each stage. \code{sum(n)} is the total sample size. For A+B designs, \code{n} is a vector with length 2; for A+B+C designs, \code{n} has length 3.
-#' @param sf.param  a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. Default to 4.
+#' @param sf.param  a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Increasing this parameter implies that more error is spent early stage and less is available in late stage. Default to 4.
 #' @param pe.par alternative hypothesis that used to calculate power/type 2 error. The alternative is set to be \code{pe = pt + pe.par}. Default to 0.25.
 #' @param ... not used argument.
 #' @return An object of class "dec.table" is a list containing:

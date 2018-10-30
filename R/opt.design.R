@@ -7,11 +7,13 @@
 #' @param pc a numeric vector of response rate. should be a vector with length 1 or 2.
 #' @param pt alternative hypothesis
 #' @param stage 2 or 3. default to 2 (2-stage design).
+#' @param two.sided logical flag. default to \code{FALSE}. if \code{two.sided = TRUE}, the trial may stop for superiority before the last stage.
 #' @param frac_n1 proportion of n1. Used for 3-stage design. default to \code{c(0.2, 0.3)}, i.e. the range of \code{n1} is \code{0.2*n} to \code{0.3*n}
 #' @param frac_n2 proportion of n2. Used for 3-stage design. default to \code{c(0.2, 0.4)}.
-#' @param sf.param  a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. For two-stage designs, default to \code{NULL}(alpha-spending is not used); for three-stage designs, default to 4.
+#' @param sf.param  a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Increasing this parameter implies that more error is spent early stage and less is available in late stage. For two-stage designs, default to \code{NULL}(alpha-spending is not used); for three-stage designs, default to 4.
 #' @param show logical. If \code{TRUE}, current sample size is shown as total sample size increase. 
 #' @param nmax maximum sample size. default to 100.
+#' @param n.ratio stop criterion for the search of two stage designs. stop if the number of feasible designsis more than \code{n.ratio} times total sample size.
 #' @param ... not used argument.
 #' @return An object of class "opt.design" is a list containing:
 #'  \item{bdry}{rejection regions}
@@ -45,7 +47,7 @@
 #'  # calculate optimal three-stage design with =O’Brien-Fleming like spending function
 #'  opt.design(alpha1, alpha2, beta, pc, pt, stage = 3, sf.param = -4)
 
-opt.design <- function(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2, 0.3), frac_n2 = c(0.2,0.4), sf.param = NULL, show = FALSE, nmax = 100, ...) {
+opt.design <- function(alpha1, alpha2, beta, pc, pt, stage = 2, two.sided = FALSE, frac_n1 = c(0.2, 0.3), frac_n2 = c(0.2,0.4), sf.param = NULL, show = FALSE, nmax = 100, n.ratio = 1/2, ...) {
   if(stage !=2 & stage !=3){
     stop("only support two and three stage designs")
   }
@@ -64,7 +66,7 @@ opt.design <- function(alpha1, alpha2, beta, pc, pt, stage = 2, frac_n1 = c(0.2,
     frac_n2 <- c(0.2,0.4)
   }
   if(stage == 2) {
-    out <- zhong.two(alpha1, alpha2, beta, pc, pt, sf.param, show, nmax = 100)
+    out <- zhong.two(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, nmax, n.ratio)
   } else {
     if(is.null(sf.param)) sf.param <- 4
     out <- zhong.three(alpha1, alpha2, beta, pc, pt, frac_n1, frac_n2, sf.param, show, nmax)

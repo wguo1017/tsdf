@@ -3,8 +3,8 @@ three.opt <- function(alpha1, alpha2, pt, n, sf.param, pe.par, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
-  as_left <- my_sfHSD(alpha1, nc/nt, sf.param)$spend
-  as_right <- my_sfHSD(alpha2, nc/nt, sf.param)$spend
+  as_left <- HSD(alpha1, nc/nt, sf.param)
+  as_right <- HSD(alpha2, nc/nt, sf.param)
   # boundary of r1: [0, n1]
   r1_bdry <- 0:nc[1]
   out_r1 <- unique(pbinom(r1_bdry, n[1], pt[1]))
@@ -97,8 +97,8 @@ two.opt <- function(alpha1, alpha2, pt, n, sf.param, pe.par, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[2]
-  as_left <- my_sfHSD(alpha1, nc/nt, sf.param)$spend
-  as_right <- my_sfHSD(alpha2, nc/nt, sf.param)$spend
+  as_left <- HSD(alpha1, nc/nt, sf.param)
+  as_right <- HSD(alpha2, nc/nt, sf.param)
   comb <- NULL
   err <- NULL
   # boundary of r1: [0, n1]
@@ -154,7 +154,7 @@ right.two.opt <- function(alpha, pt, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[2]
-  as_right <- my_sfHSD(alpha, nc/nt, sf.param)$spend
+  as_right <- HSD(alpha, nc/nt, sf.param)
   # boundary of s1 (0, n1-1]
   s1_bdry <- 0:(n[1]-1)
   out_s1 <- 1-pbinom(s1_bdry, n[1], pt)
@@ -188,7 +188,7 @@ right.three.opt <- function(alpha, pt, n, sf.param, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
-  as_right <- my_sfHSD(alpha, nc/nt, sf.param)$spend
+  as_right <- HSD(alpha, nc/nt, sf.param)
   # boundary of s1 (0, n1-1]
   s1_bdry <- 0:(n[1]-1)
   out_s1 <- 1-pbinom(s1_bdry, n[1], pt)
@@ -242,7 +242,7 @@ three.cal <- function(alpha1, alpha2, beta, pc, pt, n, sf.param = 1, ...){
   # initialization
   nc <- cumsum(n)
   nt <- nc[3]
-  as_left <- my_sfHSD(alpha1, nc/nt, sf.param)$spend
+  as_left <- HSD(alpha1, nc/nt, sf.param)
   comb <- NULL
   err <- NULL
   # boundary of r1: [0, n1]
@@ -356,12 +356,15 @@ zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.2, 0.3), fra
 }
 
 #' @keywords internal
-zhong.two <- function(alpha1, alpha2, beta, pc, pt, sf.param = NULL, show = TRUE, nmax = 100, ...){
+zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided = TRUE, sf.param = NULL, show = TRUE, nmax = 100, n.ratio=1/2, ...){
   if(length(pc) == 1) {
     pc <- rep(pc, 2)
   }
   if(length(alpha1) == 1) {
     alpha1 <- c(1, alpha1)
+    alpha2 <- c(1, alpha2)
+  } else {
+    stop("alpha1 and alpha2 should be a single value")
   }
   for(n in 2 : nmax) {
     comb <- NULL
@@ -370,50 +373,62 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, sf.param = NULL, show = TRUE
     for(n1 in 1:(n-1)) {
       n2 <- n - n1
       if(!is.null(sf.param)) {
-        alpha1 <- my_sfHSD(alpha1[2], c(n1, n)/n, sf.param)$spend
+        alpha1 <- HSD(alpha1[2], c(n1, n)/n, sf.param)
+        alpha2 <- HSD(alpha2[2], c(n1, n)/n, sf.param)
       } 
       for(r1 in 0:(n1-1)) {
-        for(r2 in r1 : (n2+r1)){
-          t <- (r1+1) : n1
-          b <- dbinom(t, n1, pc[1])
-          pet1 <- pbinom(r1, n1, pc[1])
-          if(pet1 <=  alpha1[1]) cond1 <- pet1 + sum(b * pbinom(r2 - t, n2, pc[1]))	
-          else next
-          if(cond1 <= alpha1[2]) cond2 <- pbinom(r1, n1, pc[1]) + sum(b * pbinom(r2 - t + 1, n2, pc[1]))
-          else next
-          if(cond2 > alpha1[2]) {
-            for(s in r2 : n) {
-              cond3 <- sum(b * (1 - pbinom(s - t, n2, pc[2])))
-              if(cond3 <= alpha2) cond4 <- sum(b * (1 - pbinom(s - t - 1, n2, pc[2])))
+        if(two.sided) {
+          s1_lb <- r1 + 1
+          s1_ub <- n1 - 1
+        }
+        else s1_lb <- s1_ub <- n1
+        for(s1 in s1_lb:s1_ub){
+          pet.r <- 1 - pbinom(s1, n1, pc[1])
+          if(pet.r <= alpha2[1]) {
+            for(r2 in r1 : (n2+r1)){
+              t <- (r1+1) : n1
+              b <- dbinom(t, n1, pc[1])
+              pet1 <- pbinom(r1, n1, pc[1])
+              if(pet1 <=  alpha1[1]) cond1 <- pet1 + sum(b * pbinom(r2 - t, n2, pc[1]))	
               else next
-              if(cond4 > alpha2) cond5 <- sum(dbinom(t, n1, pt) * pbinom(s - t, n2, pt))
+              if(cond1 <= alpha1[2]) cond2 <- pet1 + sum(b * pbinom(r2 - t + 1, n2, pc[1]))
               else next
-              if(cond5 <= beta){
-                comb <- rbind(c(r1, r2, s, n1, n2), comb)
-                err <- rbind(c(pet1, cond1, cond3, cond5), err)
-              }
+              if(cond2 > alpha1[2]) {
+                for(s2 in r2 : n) {
+                  cond3 <- sum(b * (1 - pbinom(s2 - t, n2, pc[2])))
+                  if(cond3 <= alpha2[2]) cond4 <- sum(b * (1 - pbinom(s2 - t - 1, n2, pc[2])))
+                  else next
+                  if(cond4 > alpha2[2]) cond5 <- sum(dbinom(t, n1, pt) * pbinom(s2 - t, n2, pt))
+                  else next
+                  if(cond5 <= beta){
+                    comb <- rbind(c(r1, r2, s1, s2, n1, n2), comb)
+                    err <- rbind(c(pet1, cond1, pet.r, cond3, cond5), err)
+                  }
+                }
+              } else next	
             }
-          } else next	
+          }
+          else next
         }
       }
     }
-    if(!is.null(comb)) n_count <- 2 * nrow(comb)
-    if(n_count > n) break
+    if(!is.null(comb)) n_count <- nrow(comb)
+    if(n_count > n.ratio * n) break
     if(show) print(paste("current sample size is", n))
   }
   out <- cbind(err, comb)
-  out <- out[order(-out[,2], -out[,3], out[, 4]), ]
+  # out <- out[order(out[,8],-out[,2]),]
+  # out <- out[!duplicated(out[,8]), ]
+  # out <- out[order(-out[,2], -out[,3], out[, 4]), ]
+  out <- out[order(out[,10],-out[,2]),]
   opt <- out[1, ]
-  names(opt) <- c("alpha11", "alpha12", "alpha2", "beta", "r1", "r2","s", "n1", "n2")
+  names(opt) <- c("alpha11", "alpha12", "alpha21", "alpha22", "beta", "r1", "r2", "s1", "s2", "n1", "n2")
   return(list(bdry = opt[5:7], error = opt[1:4], n = opt[8:9], complete = out))
 }
 
 #' @keywords internal
-my_sfHSD <- function (alpha, t, param) {
+HSD <- function (alpha, t, param) {
   t[t > 1] <- 1
-  x <- list(name = "Hwang-Shih-DeCani", param = param, parname = "gamma", 
-            sf = my_sfHSD, spend = if (param == 0) t * alpha else alpha * 
-              (1 - exp(-t * param))/(1 - exp(-param)), bound = NULL, 
-            prob = NULL)
-  x
+  spend <- if (param == 0) t * alpha else alpha * (1 - exp(-t * param))/(1 - exp(-param))
+  return(spend)
 }

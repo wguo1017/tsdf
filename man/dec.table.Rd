@@ -17,7 +17,7 @@ dec.table(alpha.l, alpha.r, alpha.u, pt, n, sf.param = 4, pe.par = 0.25)
 
 \item{n}{a vector of sample size at each stage. \code{sum(n)} is the total sample size. For A+B designs, \code{n} is a vector with length 2; for A+B+C designs, \code{n} has length 3.}
 
-\item{sf.param}{a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Details in\code{\link{gsDesign}}. Default to 4.}
+\item{sf.param}{a single real value specifying the gamma parameter for which Hwang-Shih-DeCani spending is to be computed; allowable range is [-40, 40]. Increasing this parameter implies that more error is spent early stage and less is available in late stage. Default to 4.}
 
 \item{pe.par}{alternative hypothesis that used to calculate power/type 2 error. The alternative is set to be \code{pe = pt + pe.par}. Default to 0.25.}
 
@@ -40,7 +40,7 @@ An object of class "dec.table" is a list containing:
 Generate three stage dose finding decision table
 }
 \details{
-Alpha-spending method is added to two-/three-stage designs. \code{dec.table} supports two spending functions : \code{Pocock} and \code{OF}. See details in \code{\link{gsDesign}}.
+Alpha-spending method is added to two-/three-stage designs. \code{dec.table} supports Hwang-Shih-DeCani spending function.
 }
 \examples{
 alpha.l <- 0.6
