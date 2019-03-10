@@ -310,7 +310,7 @@ three.cal <- function(alpha1, alpha2, beta, pc, pt, n, sf.param = 1, ...){
 }
 
 #' @keywords internal
-zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.2, 0.3), frac_n2 = c(0.2,0.4), sf.param = 1, show = TRUE, nmax = 100, ...) {
+zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.28, 0.32), frac_n2 = c(0.28,0.32), sf.param = 1, show = TRUE, nmax = 100, ...) {
   if(length(pc) == 1) {
     pc <- rep(pc, 2)
   }
@@ -361,11 +361,12 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided = TRUE, sf.param =
     pc <- rep(pc, 2)
   }
   if(length(alpha1) == 1) {
-    alpha1 <- c(1, alpha1)
-    alpha2 <- c(1, alpha2)
+    alpha1_ini <- c(1, alpha1)
+    alpha2_ini <- c(1, alpha2)
   } else {
     stop("alpha1 and alpha2 should be a single value")
   }
+  
   for(n in 2 : nmax) {
     comb <- NULL
     err <- NULL
@@ -373,43 +374,43 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided = TRUE, sf.param =
     for(n1 in 1:(n-1)) {
       n2 <- n - n1
       if(!is.null(sf.param)) {
-        alpha1 <- HSD(alpha1[2], c(n1, n)/n, sf.param)
-        alpha2 <- HSD(alpha2[2], c(n1, n)/n, sf.param)
-      } 
+        alpha1 <- HSD(alpha1_ini[2], c(n1, n)/n, sf.param)
+        alpha2 <- HSD(alpha2_ini[2], c(n1, n)/n, sf.param)
+      } else {
+        alpha1 <- alpha1_ini
+        alpha2 <- alpha2_ini
+      }
       for(r1 in 0:(n1-1)) {
-        if(two.sided) {
-          s1_lb <- r1 + 1
-          s1_ub <- n1 - 1
-        }
-        else s1_lb <- s1_ub <- n1
-        for(s1 in s1_lb:s1_ub){
-          pet.r <- 1 - pbinom(s1, n1, pc[1])
-          if(pet.r <= alpha2[1]) {
-            for(r2 in r1 : (n2+r1)){
-              t <- (r1+1) : n1
-              b <- dbinom(t, n1, pc[1])
-              pet1 <- pbinom(r1, n1, pc[1])
-              if(pet1 <=  alpha1[1]) cond1 <- pet1 + sum(b * pbinom(r2 - t, n2, pc[1]))	
-              else next
-              if(cond1 <= alpha1[2]) cond2 <- pet1 + sum(b * pbinom(r2 - t + 1, n2, pc[1]))
-              else next
-              if(cond2 > alpha1[2]) {
-                for(s2 in r2 : n) {
-                  cond3 <- sum(b * (1 - pbinom(s2 - t, n2, pc[2])))
-                  if(cond3 <= alpha2[2]) cond4 <- sum(b * (1 - pbinom(s2 - t - 1, n2, pc[2])))
-                  else next
-                  if(cond4 > alpha2[2]) cond5 <- sum(dbinom(t, n1, pt) * pbinom(s2 - t, n2, pt))
-                  else next
-                  if(cond5 <= beta){
-                    comb <- rbind(c(r1, r2, s1, s2, n1, n2), comb)
-                    err <- rbind(c(pet1, cond1, pet.r, cond3, cond5), err)
+        if(two.sided) s1_lb <- r1 + 1
+        else  s1_lb <- n1
+        # check L1 
+        L1 <- pbinom(r1, n1, pc[1])
+        if(L1 <=  alpha1[1] & L1 <= alpha1[2]){
+          for(s1 in s1_lb: n1){
+            R1 <- 1 - pbinom(s1, n1, pc[2])
+            if(R1 <= alpha2[1] & R1 <= alpha2[2]) {
+              t1 <- (r1+1) : s1
+              b <- dbinom(t1, n1, pc[1])
+              for(r2 in r1 : (s1 + n2)){
+                L2 <- L1 + sum(b * pbinom(r2 - t1, n2, pc[1]))
+                if(L2 <= alpha1[2]) {
+                  for(s2 in max(r2, s1) : (s1+n2)) {
+                    R2 <- R1 + sum(b * (1 - pbinom(s2 - t1, n2, pc[2])))
+                    # the beta is incorrect, need to be fixed
+                    if(R2 <= alpha2[2]) {
+                      Rpe <- sum(dbinom(t1, n1, pt) * (1 - pbinom(s2 - t1, n2, pt))) + 1 - pbinom(s1, n1, pt)
+                    }
+                    else next
+                    if(Rpe >= 1 - beta){
+                      comb <- rbind(c(r1, r2, s1, s2, n1, n2), comb)
+                      err <- rbind(c(L1, L2, R1, R2, 1- Rpe), err)
+                    } else next
                   }
-                }
-              } else next	
-            }
+                } else next	
+              }
+            } else next
           }
-          else next
-        }
+        } else next
       }
     }
     if(!is.null(comb)) n_count <- nrow(comb)
@@ -417,13 +418,11 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided = TRUE, sf.param =
     if(show) print(paste("current sample size is", n))
   }
   out <- cbind(err, comb)
-  # out <- out[order(out[,8],-out[,2]),]
-  # out <- out[!duplicated(out[,8]), ]
-  # out <- out[order(-out[,2], -out[,3], out[, 4]), ]
-  out <- out[order(out[,10],-out[,2]),]
+  out <- out[order(-out[, 2], -out[, 4] , out[,5]),]
+  out <- cbind(err, comb)
+  colnames(out) <- c("alpha11", "alpha12", "alpha13", "alpha21", "alpha22", "alpha23", "beta", "r1", "r2", "r3", "s1", "s2", "s3", "n1", "n2", "n3")
   opt <- out[1, ]
-  names(opt) <- c("alpha11", "alpha12", "alpha21", "alpha22", "beta", "r1", "r2", "s1", "s2", "n1", "n2")
-  return(list(bdry = opt[5:7], error = opt[1:4], n = opt[8:9], complete = out))
+  return(list(bdry = opt[5:7], error = opt[1:4], n = opt[8:11], complete = out))
 }
 
 #' @keywords internal
@@ -432,3 +431,4 @@ HSD <- function (alpha, t, param) {
   spend <- if (param == 0) t * alpha else alpha * (1 - exp(-t * param))/(1 - exp(-param))
   return(spend)
 }
+
