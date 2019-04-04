@@ -45,5 +45,5 @@ out <- dec.sim(truep, res$table, start.level = 2, nsim = 1000)
 summary(out, pt = 0.3)
 }
 \author{
-Wenchuan Guo <wguo007@ucr.edu>
+Wenchuan Guo <wguo1017@gmail.com>
 }

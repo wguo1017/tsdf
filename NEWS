@@ -1,5 +1,7 @@
-# tsdf 1.1-6
-- added "n.ratio" and "two.sided" two options for more flexible Phase 2 two-stage designs.
+# tsdf 1.1-7
+- fixed bugs when calculating type 2 errors for phase 2 designs
+- added "two.sided" option for phase 2 three-stage designs
+- added alpha-spending function (no need to install gsDesign pacakge now)
 
 # tsdf 1.1-4
 - "dec.sim" now reports the probability of selected as over the MTD at each dose level

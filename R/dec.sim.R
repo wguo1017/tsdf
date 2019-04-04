@@ -20,7 +20,7 @@
 #'  \item{truep}{input; true probabilities of toxicity.}
 #'  \item{start.level}{input; starting dose level.}
 #'  \item{nsim}{input; number of simulated trails.}
-#' @author Wenchuan Guo <wguo007@ucr.edu>
+#' @author Wenchuan Guo <wguo1017@gmail.com>
 #' @import stats
 #' @export
 #' @examples
