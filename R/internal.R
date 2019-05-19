@@ -424,6 +424,7 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
     if(show) print(paste("current sample size is", n))
   }
   out <- as.matrix(out)
+  out <- out[order(-out[, 2], -out[, 4], -out[, 5]), ]
   colnames(out) <- c("alpha11", "alpha12", "alpha21", "alpha22", "beta", "r1", "r2", "s1", "s2", "n1", "n2")
   opt <- out[1, ]
   return(list(bdry = opt[6:9], error = opt[1:5], n = opt[10:11], complete = out))
