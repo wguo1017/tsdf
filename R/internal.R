@@ -395,7 +395,8 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
                 L2 <- L1 + sum(b * pbinom(r2 - t1, n2, pc[1]))
                 if(L2 <= alpha1[2]) {
                   for(s2 in max(r2, s1) : (s1+n2)) {
-                    R2 <- R1 + sum(b * (1 - pbinom(s2 - t1, n2, pc[2])))
+                    # R2 <- R1 + sum(b * (1 - pbinom(s2 - t1, n2, pc[2])))
+                    R2 <- R1 + sum(dbinom(t1, n1, pc[2]) * (1 - pbinom(s2 - t1, n2, pc[2])))
                     # the beta is incorrect, need to be fixed
                     if(R2 <= alpha2[2]) {
                       Rpe <- sum(dbinom(t1, n1, pt) * (1 - pbinom(s2 - t1, n2, pt))) + 1 - pbinom(s1, n1, pt)
@@ -416,7 +417,7 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
     
     if(!is.null(comb)) {
       out <- cbind(err, comb)
-      out <- out[order(out[,10], -out[, 2], -out[, 4], -out[, 5]), ]
+      out <- out[order(out[,10], -out[, 2], -out[, 4], -out[, 5], -out[, 1], -out[, 3]), ]
       out <- do.call(rbind, by(out, out[, 10], FUN=function(x) head(x, 1)))
       n_count <- nrow(out)
     }
@@ -424,9 +425,14 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
     if(show) print(paste("current sample size is", n))
   }
   out <- as.matrix(out)
-  out <- out[order(-out[, 2], -out[, 4], -out[, 5]), ]
+  out <- out[order(out[,10], -out[, 2], -out[, 4], -out[, 5]), ]
   colnames(out) <- c("alpha11", "alpha12", "alpha21", "alpha22", "beta", "r1", "r2", "s1", "s2", "n1", "n2")
-  opt <- out[1, ]
+  if(two.sided){
+    en <- apply(out, 1, function(x) x[10] + x[11]*(1-x[3]-x[1]))
+  } else {
+    en <- apply(out, 1, function(x) x[10] + x[11]*(1-x[1]))
+  }
+  opt <- out[which.min(en), ]
   return(list(bdry = opt[6:9], error = opt[1:5], n = opt[10:11], complete = out))
 }
 
