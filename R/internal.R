@@ -238,7 +238,7 @@ right.three.opt <- function(alpha, pt, n, sf.param, ...){
 }
 
 #' @keywords internal
-zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.1, 0.3), frac_n2 = c(0.2,0.4), sf.param = 1, two.sided = FALSE, show = TRUE, nmax = 100, ...) {
+zhong.three <- function(alpha1, alpha2, beta, pc, pe, frac_n1 = c(0.1, 0.3), frac_n2 = c(0.2,0.4), sf.param = 1, stop.eff = FALSE, show = TRUE, nmax = 100, ...) {
   if(length(pc) == 1) {
     pc <- rep(pc, 2)
   }
@@ -276,7 +276,7 @@ zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.1, 0.3), fra
         alpha2 <- HSD(alpha2_ini[3], cumsum(n[i, ])/nt, sf.param)
       }
       for(r1 in (n1-1):0) {
-        if(two.sided) s1_lb <- r1 + 1
+        if(stop.eff) s1_lb <- r1 + 1
         else s1_lb <- n1
         # check L1 
         L1 <- pbinom(r1, n1, pc[1])
@@ -289,7 +289,7 @@ zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.1, 0.3), fra
               for(r2 in (s1+n2) : r1){
                 L2 <- L1 + sum(b * pbinom(r2 - t1, n2, pc[1]))
                 if(L2 <= alpha1[2] & L2 <= alpha1[3]) {
-                  if(two.sided) {
+                  if(stop.eff) {
                     s2_lb <- max(r2, s1)
                   } 
                   else {
@@ -304,7 +304,7 @@ zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.1, 0.3), fra
                           return(dbinom(tt, n1, pc[1]) * sum(dbinom(t2, n2, pc[1]) * pbinom(r3-tt-t2, n3, pc[1])))
                         }))
                         if(L3 <= alpha1[3]){
-                          if(two.sided) s3_lb <- max(r3, s2)
+                          if(stop.eff) s3_lb <- max(r3, s2)
                           else s3_lb <- r3
                           for(s3 in  s3_lb: (s2 + n3)){
                             R3 <- R2 + sum(sapply(t1, function(tt){
@@ -312,9 +312,9 @@ zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.1, 0.3), fra
                               return(dbinom(tt, n1, pc[1]) * sum(dbinom(t2, n2, pc[1]) * (1 - pbinom(s3-tt-t2, n3, pc[2]))))
                             }))
                             if(R3 <= alpha2[3]){
-                              Rpe <- 1 - pbinom(s1, n1, pt) + sum(dbinom(t1, n1, pt) * (1 - pbinom(s2 - t1, n2, pt))) + sum(sapply(t1, function(tt){
+                              Rpe <- 1 - pbinom(s1, n1, pe) + sum(dbinom(t1, n1, pe) * (1 - pbinom(s2 - t1, n2, pe))) + sum(sapply(t1, function(tt){
                                 t2 <- (r2-tt+1) : (s2-tt)
-                                return(dbinom(tt, n1, pt) * sum(dbinom(t2, n2, pt) * (1 - pbinom(s3-tt-t2, n3, pt))))
+                                return(dbinom(tt, n1, pe) * sum(dbinom(t2, n2, pe) * (1 - pbinom(s3-tt-t2, n3, pe))))
                               }))
                               # print(Rpe)
                             } else next
@@ -355,7 +355,7 @@ zhong.three <- function(alpha1, alpha2, beta, pc, pt, frac_n1 = c(0.1, 0.3), fra
 
 
 #' @keywords internal
-zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, nmax, n.choice, frac_n1,...){
+zhong.two <- function(alpha1, alpha2, beta, pc, pe, stop.eff, sf.param, show, nmax, n.choice, frac_n1,...){
   if(length(pc) == 1) {
     pc <- rep(pc, 2)
   }
@@ -381,7 +381,7 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
         alpha2 <- alpha2_ini
       }
       for(r1 in (n1-1):0) {
-        if(two.sided) s1_lb <- r1 + 1
+        if(stop.eff) s1_lb <- r1 + 1
         else  s1_lb <- n1
         # check L1 
         L1 <- pbinom(r1, n1, pc[1])
@@ -399,9 +399,8 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
                     R2 <- R1 + sum(dbinom(t1, n1, pc[2]) * (1 - pbinom(s2 - t1, n2, pc[2])))
                     # the beta is incorrect, need to be fixed
                     if(R2 <= alpha2[2]) {
-                      Rpe <- sum(dbinom(t1, n1, pt) * (1 - pbinom(s2 - t1, n2, pt))) + 1 - pbinom(s1, n1, pt)
-                    }
-                    else next
+                      Rpe <- sum(dbinom(t1, n1, pe) * (1 - pbinom(s2 - t1, n2, pe))) + 1 - pbinom(s1, n1, pe)
+                    } else next
                     if(Rpe >= 1 - beta){
                       comb <- rbind(c(r1, r2, s1, s2, n1, n2), comb)
                       err <- rbind(c(L1, L2, R1, R2, 1- Rpe), err)
@@ -414,10 +413,9 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
         } else next
       }
     }
-    
     if(!is.null(comb)) {
       out <- cbind(err, comb)
-      out <- out[order(out[,10], -out[, 2], -out[, 4], -out[, 5], -out[, 1], -out[, 3]), ]
+      out <- out[order(out[,10], -out[, 2], -out[, 4], out[, 5], -out[, 1], -out[, 3]), ]
       out <- do.call(rbind, by(out, out[, 10], FUN=function(x) head(x, 1)))
       n_count <- nrow(out)
     }
@@ -427,7 +425,7 @@ zhong.two <- function(alpha1, alpha2, beta, pc, pt, two.sided, sf.param, show, n
   out <- as.matrix(out)
   out <- out[order(out[,10], -out[, 2], -out[, 4], -out[, 5]), ]
   colnames(out) <- c("alpha11", "alpha12", "alpha21", "alpha22", "beta", "r1", "r2", "s1", "s2", "n1", "n2")
-  if(two.sided){
+  if(stop.eff){
     en <- apply(out, 1, function(x) x[10] + x[11]*(1-x[3]-x[1]))
   } else {
     en <- apply(out, 1, function(x) x[10] + x[11]*(1-x[1]))

@@ -4,7 +4,7 @@
 \alias{opt.design}
 \title{Zhong's 2-/3- stage Phase II design}
 \usage{
-opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, two.sided = FALSE,
+opt.design(alpha1, alpha2, beta, pc, pe, stage = 2, stop.eff = FALSE,
   frac_n1 = NULL, frac_n2 = NULL, sf.param = NULL, show = FALSE,
   nmax = 100, n.choice = 1, ...)
 }
@@ -17,11 +17,11 @@ opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, two.sided = FALSE,
 
 \item{pc}{a numeric vector of response rate. should be a vector with length 1 or 2.}
 
-\item{pt}{alternative hypothesis}
+\item{pe}{alternative hypothesis.}
 
 \item{stage}{2 or 3. default to 2 (2-stage design).}
 
-\item{two.sided}{logical flag. default to \code{FALSE}. if \code{two.sided = TRUE}, the trial may stop for superiority before the last stage.}
+\item{stop.eff}{logical flag. default to \code{FALSE}. if \code{stop.eff = TRUE}, the trial may stop for efficacy at interim.}
 
 \item{frac_n1}{proportion of n1. for 2-stage design, default to \code{c(0.3, 0.6)}, i.e. the range of \code{n1} is \code{0.2*n} to \code{0.5*n}. for 3-stage design, default to \code{c(0.2, 0.3)}, i.e. the range of \code{n1} is \code{0.2*n} to \code{0.3*n}}
 
@@ -47,7 +47,7 @@ An object of class "opt.design" is a list containing:
  \item{alpha2}{input; right-side type 1 error}
  \item{beta}{input; type 2 error}
  \item{pc}{input; a vector of response rate.}
- \item{pt}{input; a vector of alternative response rate}
+ \item{pe}{input; a vector of alternative response rate}
  \item{sf}{input; the alpha-spending function used}
  \item{stage}{input; two- or three- stage design is used}
 }
@@ -62,9 +62,9 @@ The two-stage design setup is: n1 patients are treated in the first stage. At th
  alpha2 <- 0.10
  beta <- 0.15
  pc <- 0.25
- pt <- pc + 0.20
+ pe <- pc + 0.20
  # calculate optimal two-stage design without using alpha-spending
- opt.design(alpha1, alpha2, beta, pc, pt, stage=2)
+ opt.design(alpha1, alpha2, beta, pc, pe, stage=2)
  \dontrun{
  # calculate optimal two-stage design with Pocock-like spending function 
  opt.design(alpha1, alpha2, beta, pc, pt, stage = 2, sf.param = 1)

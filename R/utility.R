@@ -261,7 +261,7 @@ print.summary.dec.sim <- function(x, ...) {
 #' print(out)
 print.opt.design <- function(x, ...) {
   cat("\n Zhong's", x$stage,"stage Phase II design \n\n")
-  cat("Minimal response rate: ", unique(x$pc), "\n")
+  cat("Minimal response rate: ", unique(x$pe), "\n")
   cat("Postulate response rate: ", x$pt, "\n")
   cat("Left-side type 1 error: ",x$alpha1, "\n")
   cat("Right-side type 1 error: ",x$alpha2, "\n")
