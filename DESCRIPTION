@@ -1,7 +1,7 @@
 Package: tsdf
 Type: Package
 Title: Two-/Three-Stage Designs for Phase 1&2 Clinical Trials
-Version: 1.1-7
+Version: 1.1-8
 Date: 2019-05-31
 Author: Wenchuan Guo, Jianan Hui, Bob Zhong
 Maintainer: Wenchuan Guo <wguo1017@gmail.com>

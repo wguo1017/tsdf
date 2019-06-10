@@ -1,3 +1,9 @@
+# tsdf 1.1-8
+- added function "adj.two" to handle over-running and under-running designs
+- changed the precision of errors to 4 digits in opt.design
+- changed 'pt' option to 'pe' in opt.design
+- changed 'two.sided' option to 'stop.eff' in opt.design
+
 # tsdf 1.1-7
 - fixed bugs when calculating type 2 errors for phase 2 designs
 - added "two.sided" option for phase 2 three-stage designs
