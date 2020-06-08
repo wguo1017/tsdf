@@ -4,8 +4,7 @@
 \alias{dec.table}
 \title{generate three-stage dose-finding decision table}
 \usage{
-dec.table(alpha.l, alpha.r, alpha.u, pt, n, sf.param = 4,
-  pe.par = 0.25)
+dec.table(alpha.l, alpha.r, alpha.u, pt, n, sf.param = 4, pe.par = 0.25, ...)
 }
 \arguments{
 \item{alpha.l}{left-side overall type 1 error. Control the upper bound of dose escalation.}

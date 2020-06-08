@@ -4,9 +4,17 @@
 \alias{plot.dec.sim}
 \title{plot simulation results from a dec.sim object}
 \usage{
-\method{plot}{dec.sim}(x, pt, s = 1, type = c("all", "s", "prob", "np",
-  "dlt"), label = TRUE, col = "cornflowerblue",
-  text.col = "darkblue", cex = 1, ...)
+\method{plot}{dec.sim}(
+  x,
+  pt,
+  s = 1,
+  type = c("all", "s", "prob", "np", "dlt"),
+  label = TRUE,
+  col = "cornflowerblue",
+  text.col = "darkblue",
+  cex = 1,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of class \code{"dec.sim"} or \code{"sl.sim"}, a result of a call to \code{dec.sim} or \code{sl.sim}.}

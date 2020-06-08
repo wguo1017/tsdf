@@ -4,9 +4,22 @@
 \alias{opt.design}
 \title{Zhong's 2-/3- stage Phase II design}
 \usage{
-opt.design(alpha1, alpha2, beta, pc, pe, stage = 2, stop.eff = FALSE,
-  frac_n1 = NULL, frac_n2 = NULL, sf.param = NULL, show = FALSE,
-  nmax = 100, n.choice = 1, ...)
+opt.design(
+  alpha1,
+  alpha2,
+  beta,
+  pc,
+  pe,
+  stage = 2,
+  stop.eff = FALSE,
+  frac_n1 = NULL,
+  frac_n2 = NULL,
+  sf.param = NULL,
+  show = FALSE,
+  nmax = 100,
+  n.choice = 1,
+  ...
+)
 }
 \arguments{
 \item{alpha1}{left-side overall type I error.}

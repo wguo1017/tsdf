@@ -35,7 +35,7 @@
 #' n <- rep(3, 2)
 #' dec.table(alpha.l, alpha.r, alpha.u, pt, n)$table
 
-dec.table <- function(alpha.l, alpha.r, alpha.u, pt, n, sf.param  = 4, pe.par = 0.25) {
+dec.table <- function(alpha.l, alpha.r, alpha.u, pt, n, sf.param  = 4, pe.par = 0.25, ...) {
   # check
   err <- c(alpha.l, alpha.r, alpha.u)
   k <- length(n)
