@@ -18,5 +18,6 @@ devtools::install_github("wguo1990/tsdf")
 ```
 ### References
 [1] Bob Zhong, Single-arm phase IIA clinical trials with go/no-go decisions, Contemp Clin Trials, 2012
+
 [2] Wenchuan Guo and Bob Zhong, Target toxicity design for phase I dose-finding, Statistical Theory and Related Fields, 2021
 
